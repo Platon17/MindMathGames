@@ -2,26 +2,32 @@ import asyncio
 import logging
 from aiogram import Bot, Dispatcher,types
 from aiogram.filters import CommandStart, Command
-import config
+from config import settings
 from aiogram.enums import ParseMode
 from aiogram.utils import markdown
 
-bot = Bot(token=config.BOT_TOKEN)
+
 dp = Dispatcher()
 
 @dp.message(CommandStart())
 async def handle_start(message: types.Message):
-    await message.answer(text= f"Hello, {message.from_user.full_name}")
+    url = "https://funik.ru/wp-content/uploads/2018/10/17478da42271207e1d86.jpg"
+    await message.answer(
+        text= f"{markdown.hide_link(url)}Hello, {markdown.hbold(message.from_user.full_name)}",
+        parse_mode=ParseMode.HTML
+    )
 
 @dp.message(Command("help"))
 async def handle_start(message: types.Message):
 
     text = markdown.text(
-        "Привет\\! Я умею играть в *игры*\\!",
+        markdown.markdown_decoration.quote("Привет! Я умею играть в игры!"),
         markdown.text(
-            "Выбери в какую ",
+            "Выбери в ",
+            markdown.underline("какую "),
             markdown.bold("игру"),
-            "ты хочешь поиграть\\!",),
+            markdown.markdown_decoration.quote("ты хочешь поиграть!"),
+        ),
         sep = "\n"
     )
     await message.answer(text=text, parse_mode=ParseMode.MARKDOWN_V2)
@@ -41,6 +47,7 @@ async def echo_message(message: types.Message):
 
     await message.answer(
         text='Wait...',
+        parse_mode=None
     )
 
     try:
@@ -50,7 +57,11 @@ async def echo_message(message: types.Message):
 
 
 async def main():
-    logging.basicConfig(level=logging.DEBUG)
+    logging.basicConfig(level=logging.INFO)
+    bot = Bot(
+        token=settings.bot_token,
+        parse_mode = ParseMode.MARKDOWN_V2,
+    )
     await dp.start_polling(bot)
 
 
