@@ -1,20 +1,17 @@
 import asyncio
 import logging
-from re import Match
-
-from aiogram.types import ReplyKeyboardMarkup
-from magic_filter import RegexpMode
-
+from aiogram.fsm.storage.memory import MemoryStorage
+from aiogram.types import Message
 from aiogram import Bot, F
 from aiogram import Dispatcher
 from aiogram import types
-from aiogram.filters import CommandStart, Command
+from aiogram.filters import Command
 from aiogram.utils import markdown
 from aiogram.enums import ParseMode
-
-from config import settings
-
-dp = Dispatcher()
+from bilet import bilet
+import config
+import os
+dp = Dispatcher(storage=MemoryStorage())
 
 
 @dp.message(Command("hello"))
@@ -80,8 +77,8 @@ async def chet(message: types.Message):
 async def biletik(message: types.Message):
     kb = [
         [
-            types.KeyboardButton(text="Я буду решать, а ты загадывать"),
-            types.KeyboardButton(text="Я буду задавать пример, а ты решать"),
+            types.KeyboardButton(text="Тренироваться"),
+            types.KeyboardButton(text="Решить"),
             types.KeyboardButton(text="/Назад"),
         ]
     ]
@@ -94,7 +91,16 @@ async def biletik(message: types.Message):
         text="Хороший выбор\\! Кто из нас будет загадывать, а кто отвечать\\?",
         reply_markup=keyboard
     )
-
+@dp.message(Command("importbilet"))
+async def importbilet(message: Message):
+    await message.answer(text="Введи числа через пробел")
+@dp.message()
+async def obrabot_bilet(message: Message):
+    n = message.text.split()  # строка
+    await message.answer(
+        text=bilet(n, '+-'),
+        parse_mode=ParseMode.HTML,
+    )
 
 @dp.message(F.text.lower() == "самый дорогой путь.")
 async def put(message: types.Message):
@@ -143,7 +149,7 @@ async def handle_start(message: types.Message):
 async def main():
     logging.basicConfig(level=logging.INFO)
     bot = Bot(
-        token=settings.bot_token,
+        token=config.BOT_TOKEN,
         parse_mode=ParseMode.MARKDOWN_V2,
     )
     await dp.start_polling(bot)
