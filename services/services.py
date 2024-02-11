@@ -5,6 +5,16 @@ from random import randint
 #  Мультиязычность
 from lexicon.lexicon_ru import LEXICON_RU  # подключаем лексикон русского языка
 from lexicon.lexicon_en import LEXICON_EN  # подключаем лексикон английского языка
+from lexicon.symbols import SYMBOLS  # подключаем лексикон английского языка
+
+def _sym(param: str) -> str:
+    return SYMBOLS.get(param,param)
+
+def _sLine(line: str) -> str:
+    newLine:str = ''
+    for ch in line:
+        newLine = newLine + _sym(ch)
+    return newLine
 
 lexicon = {
     'ru': LEXICON_RU,

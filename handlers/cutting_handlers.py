@@ -3,7 +3,7 @@ from var import user_dict
 from data import FSM_state, max_variants
 from filters.cutting_filters import WordCutting, WordSolveCutting, WordTrainCutting, WordTrainCutting, RightCutting
 from filters.main_filters import strDict, WordExampl
-from services.services import _txt
+from services.services import _txt, _sLine
 from services.cutting import m_to_str,cut
 from aiogram import Router
 from aiogram.fsm.context import FSMContext
@@ -95,20 +95,23 @@ async def examples_tickets(message: types.Message):
         reply_markup=keyboard
     )
 
+
 @router_cutting.message(WordTrainCutting(), RightCutting())
 @router_cutting.message(WordCutting(), RightCutting())
 @router_cutting.message(StateFilter(FSM_state.wCutting), RightCutting())
 async def solve_cutting(message: types.Message, state: FSMContext, matrix: list):
-    await message.answer(text=m_to_str(matrix))
+
+    await message.answer(text=_sLine(m_to_str(matrix)))
+
     userdata = await state.get_data()
-    n_cutting = userdata.get('n_cutting', 2)
+    n_cutting = userdata.get('n_cutting', 4)
     excess_cutting = userdata.get('excess_cutting', 0)
     all_cutting = userdata.get('all_cutting', False)
     result = cut(matrix, n_cutting, excess_cutting, all_cutting)
     if result:
         res=result['result']
         for v in res:
-            await message.answer(text=v)
+            await message.answer(text=_sLine(v))
     else:
         await message.answer(text=_txt('not_solve_cutting', message.from_user.id))
     await message.answer(text=_txt('try_again_cutting', message.from_user.id))

@@ -3,7 +3,7 @@ from var import user_dict
 from data import FSM_state, max_variants
 from filters.tickets_filters import WordTicket, WordSolveTicket, WordGiveUp, WordExamplTicket, WordTrainTicket, RightTicket, RightOpers
 from filters.main_filters import strDict, WordExampl, WordOptions
-from services.services import _txt
+from services.services import _txt,_sLine
 from services.tickets import numbers_opers,gen_ticket, solve as ticket_solve
 
 from aiogram import Router
@@ -48,7 +48,7 @@ async def show_task_ticket(message: types.Message, state: FSMContext):
     )
 
     await message.answer(
-        text='  '.join(numbers),
+        text=_sLine('    '.join(numbers)),
         reply_markup=keyboard
     )
 
@@ -76,7 +76,7 @@ async def give_up_ticket(message: types.Message,state: FSMContext):
         for res in result['result']:
             if n_var > max_variants:
                 break
-            await message.answer(text=res)
+            await message.answer(text=_sLine(res))
             n_var += 1
     else:
         await message.answer(text=_txt('wrong1', message.from_user.id))
@@ -185,7 +185,7 @@ async def solve_ticket(message: types.Message, state: FSMContext, numbers: list,
         for res in result['result']:
             if n_var > max_variants:
                 break
-            await message.answer(text=res)
+            await message.answer(text=_sLine(res))
             n_var += 1
     else:
         await message.answer(text=_txt('wrong1', message.from_user.id))

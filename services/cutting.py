@@ -91,7 +91,7 @@ def variants(v:list[int],r:int,c:int) -> tuple:
         frames.append(cf)          # -90 поворот 180
     return tuple(frames)
 
-def print_m(ttm:tuple, r:int, c:int, sch = 'X0THSZAVBC'):
+def print_m(ttm:tuple, r:int, c:int, sch = 'X0THSZAVBC', empty:str='_'):
     for y in range(r):
         for x in range(c):
             p = y * c + x           # номер координаты
@@ -104,11 +104,11 @@ def print_m(ttm:tuple, r:int, c:int, sch = 'X0THSZAVBC'):
                     continue        # следующую координату, в кортежах других фигур этой координаты не будет
                 nt += 1             # следующий кортеж
             if not dot:             # если этой координаты нет ни в одном кортеже
-                print('.', end=' ')
+                print(empty, end=' ')
         print()
     print()
 
-def t_to_str(ttm:tuple, r:int, c:int, sch = 'X0THSZAVBC', empty:str='-')->str:
+def t_to_str(ttm:tuple, r:int, c:int, sch = 'X0THSZAVBC', empty:str='_')->str:
     lines = ""
     for y in range(r):
         line = ""
