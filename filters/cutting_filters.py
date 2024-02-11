@@ -38,3 +38,13 @@ class RightCutting(BaseFilter):
         lines: list = message.text.split('\n')
         if lines: return {'matrix': lines}
         return False
+
+class BtnOption(BaseFilter):
+    async def __call__(self, message: Message) -> bool:
+        if (not (message.text.lower().find(_txt('f_n_cutting', message.from_user.id)) == -1) or
+                not (message.text.lower().find(_txt('f_excess', message.from_user.id)) == -1) or
+                not (message.text.lower().find(_txt('f_all_true', message.from_user.id)) == -1) or
+                not (message.text.lower().find(_txt('f_all_false', message.from_user.id)) == -1)
+        ):
+            return True
+        return False

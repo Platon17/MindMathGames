@@ -1,12 +1,13 @@
 # Хэндлеры главного меню
 from var import user_dict
 from data import FSM_state, max_variants
-from filters.cutting_filters import WordCutting, WordSolveCutting, WordTrainCutting, WordTrainCutting, RightCutting
+from filters.cutting_filters import WordCutting, WordSolveCutting, WordTrainCutting, WordTrainCutting, RightCutting, BtnOption
 from filters.main_filters import strDict, WordExampl
 from services.services import _txt, _sLine
 from services.cutting import m_to_str,cut
 from aiogram import Router
 from aiogram.fsm.context import FSMContext
+from keyboards.keyboards import create_inline_kb, create_kb, create_kb_ru
 
 
 from aiogram import F
@@ -20,6 +21,55 @@ from aiogram.enums import ParseMode
 # ==================================================
 router_cutting = Router()
 
+@router_cutting.message(StateFilter(FSM_state.wCutting),F.text=='🔧 Настройки')
+@router_cutting.message(StateFilter(FSM_state.wCutting),F.text.endswith('астройки'))
+@router_cutting.message(StateFilter(FSM_state.wCutting),F.text.endswith('ptions'))
+async def to_options_cutting(message: types.Message, state: FSMContext):
+    userdata = await state.get_data()
+    n_cutting = userdata.get('n_cutting', 2)
+    excess_cutting = userdata.get('excess_cutting', 0)
+    all_cutting = userdata.get('all_cutting', False)
+    await message.answer(
+        text=_txt('tickets_оptions',message.from_user.id),
+        reply_markup=create_kb(2,message.from_user.id, 'btn_back', 'btn_home', 'btn_all_'+str(all_cutting), str(n_cutting)+'_btn_cut', str(excess_cutting)+'_btn_excess')
+    )
+    await state.set_state(FSM_state.wCutting)
+
+#@router_cutting.message(StateFilter(FSM_state.wTicketOptions),F.text=='⬅️ Назад')
+#async def options_back(message: types.Message, state: FSMContext):
+#    await state.set_state(FSM_state.wCutting)
+#    await cutting(message,state)
+
+@router_cutting.message(BtnOption())
+async def set_options_cutting_all(message: types.Message, state: FSMContext):
+    if message.text == _txt('btn_all_True',message.from_user.id):
+        await state.update_data(all_cutting=False)
+    elif message.text == _txt('btn_all_False',message.from_user.id):
+        await state.update_data(all_cutting=True)
+    elif message.text == _txt('2_btn_cut', message.from_user.id):
+        await state.update_data(n_cutting=3)
+    elif message.text == _txt('3_btn_cut', message.from_user.id):
+        await state.update_data(n_cutting=4)
+    elif message.text == _txt('4_btn_cut', message.from_user.id):
+        await state.update_data(n_cutting=5)
+    elif message.text == _txt('5_btn_cut', message.from_user.id):
+        await state.update_data(n_cutting=6)
+    elif message.text == _txt('6_btn_cut', message.from_user.id):
+        await state.update_data(n_cutting=2)
+    elif message.text == _txt('0_btn_excess', message.from_user.id):
+        await state.update_data(excess_cutting=1)
+    elif message.text == _txt('1_btn_excess', message.from_user.id):
+        await state.update_data(excess_cutting=2)
+    elif message.text == _txt('2_btn_excess', message.from_user.id):
+        await state.update_data(excess_cutting=3)
+    elif message.text == _txt('3_btn_excess', message.from_user.id):
+        await state.update_data(excess_cutting=4)
+    elif message.text == _txt('4_btn_excess', message.from_user.id):
+        await state.update_data(excess_cutting=5)
+    elif message.text == _txt('5_btn_excess', message.from_user.id):
+        await state.update_data(excess_cutting=0)
+    await to_options_cutting(message,state)
+
 @router_cutting.message(Command('cutting'))
 @router_cutting.message(F.text.startwith('Разрезание'))
 @router_cutting.message(F.text.startwith('разрезание'))
@@ -30,34 +80,13 @@ async def cutting(message: types.Message, state: FSMContext):
     await state.set_state(FSM_state.wCutting)
     await message.answer(text=_txt('chosen_cutting',message.from_user.id))
     await message.answer(text=_txt('need_cutting', message.from_user.id))
-    kb = [
-        [
-            types.KeyboardButton(text=_txt('back', message.from_user.id)),
-            types.KeyboardButton(text=_txt('home', message.from_user.id)),
-            types.KeyboardButton(text=_txt('examples', message.from_user.id)),
-            types.KeyboardButton(text=_txt('options', message.from_user.id)),
-        ],
-        [
-            types.KeyboardButton(text='++++'),
-            types.KeyboardButton(text='+..+\n+..+'),
-            types.KeyboardButton(text='++++\n+..+\n+..+'),
-            types.KeyboardButton(text='+..+\n+..+\n+..+\n+..+'),
-        ]
-    ]
-
-    keyboard = types.ReplyKeyboardMarkup(
-        keyboard=kb,
-        resize_keyboard=True,
-        input_field_placeholder=_txt('txt_solve_cutting', message.from_user.id)
-    )
     await message.answer(
-        text=markdown.text(
-            _txt('txt_solve_cutting', message.from_user.id),
-            markdown.text(_txt('input_citting', message.from_user.id),
-                          ),
-            sep="\n"
-        ),
-        reply_markup=keyboard
+        text=markdown.text(_txt('need_tickets',message.from_user.id),sep="\n"),
+        reply_markup=create_kb(4, message.from_user.id, 'btn_back', 'btn_home', 'btn_examples', 'btn_options',
+                               '++++',
+                               '+..+\n+..+',
+                               '++++\n+..+\n+..+',
+                               '+..+\n+..+\n+..+\n+..+'),
     )
 
 # ==== EXAMPLES cutting ===
@@ -104,7 +133,7 @@ async def solve_cutting(message: types.Message, state: FSMContext, matrix: list)
     await message.answer(text=_sLine(m_to_str(matrix)))
 
     userdata = await state.get_data()
-    n_cutting = userdata.get('n_cutting', 4)
+    n_cutting = userdata.get('n_cutting', 2)
     excess_cutting = userdata.get('excess_cutting', 0)
     all_cutting = userdata.get('all_cutting', False)
     result = cut(matrix, n_cutting, excess_cutting, all_cutting)

@@ -28,13 +28,13 @@ def fit(v:int,r:int,c:int)->list:
     return nm
 
 # функция выдаёт кортеж (список чисел) фигуры сдвинутой в угол
-def cort(m:list)->tuple:
-    r:int=len(m)
-    d:list=[]
-    c:int=0
-    for y in range(r):
-        c =len(m[y])
-        for x in range(c):
+def cort(m:list,r:int,c:int)->tuple:
+    _r:int=len(m)
+    _c:int=0
+    d: list = []
+    for y in range(_r):
+        _c =len(m[y])
+        for x in range(_c):
             if m[y][x]:
                 d.append(y*c+x)
     return tuple(d)
@@ -60,38 +60,38 @@ def rev_v(g): # относительно диагонали
 def variants(v:list[int],r:int,c:int) -> tuple:
     frames = []
     f = fit(v,r,c)                      # матрица обрезанная
-    frames.append(cort(f))          # 1 оригинал
+    frames.append(cort(f,r,c))          # 1 оригинал
     f  = rotate(f)
-    cf = cort(f)
+    cf = cort(f,r,c)
     if not frames.count(cf):
         frames.append(cf)          # 180 поворот
     f = rotateL(f)
-    cf = cort(f)
+    cf = cort(f,r,c)
     if not frames.count(cf):
         frames.append(cf)         # +90 поворот налево
     f = rotate(f)
-    cf = cort(f)
+    cf = cort(f,r,c)
     if not frames.count(cf):
         frames.append(cf)          # -90 поворот 180
     f = rev_v(f)
-    cf = cort(f)
+    cf = cort(f,r,c)
     if not frames.count(cf):
         frames.append(cf)           # отражение
     f = rotate(f)
-    cf = cort(f)
+    cf = cort(f,r,c)
     if not frames.count(cf):
         frames.append(cf)          # 180 поворот
     f = rotateL(f)
-    cf = cort(f)
+    cf = cort(f,r,c)
     if not frames.count(cf):
         frames.append(cf)         # +90 поворот налево
     f = rotate(f)
-    cf = cort(f)
+    cf = cort(f,r,c)
     if not frames.count(cf):
         frames.append(cf)          # -90 поворот 180
     return tuple(frames)
 
-def print_m(ttm:tuple, r:int, c:int, sch = 'X0THSZAVBC', empty:str='_'):
+def print_m(ttm:tuple, r:int, c:int, sch = 'XOTHSZAVBC', empty:str='_'):
     for y in range(r):
         for x in range(c):
             p = y * c + x           # номер координаты
@@ -108,7 +108,7 @@ def print_m(ttm:tuple, r:int, c:int, sch = 'X0THSZAVBC', empty:str='_'):
         print()
     print()
 
-def t_to_str(ttm:tuple, r:int, c:int, sch = 'X0THSZAVBC', empty:str='_')->str:
+def t_to_str(ttm:tuple, r:int, c:int, sch = 'XOTHSZAVBC', empty:str='_')->str:
     lines = ""
     for y in range(r):
         line = ""
@@ -138,7 +138,7 @@ def cutnn(ssm:list, sm:list, tdots:tuple, r:int, c:int, n:int, l:int, all:bool=F
     if n == 1:   # базовое условие выхода из рекурсии
         lm = []
         for v in combinations(tdots, l):  	# перебираем варианты из tdots по l клеток
-            tv = cort(fit(v,r,c))  			# преобразовываем вариант в кортеж
+            tv = cort(fit(v,r,c),r,c)  			# преобразовываем вариант в кортеж
             if first:  # если набор ещё не задан, зададим его по первому варианту
                 return v				
             if nabor.count(tv):         	# вариант существует в наборе
@@ -155,7 +155,7 @@ def cutnn(ssm:list, sm:list, tdots:tuple, r:int, c:int, n:int, l:int, all:bool=F
                     break
             if not unique: continue
 
-            tv = cort(fit(v,r,c))               # преобразовываем вариант в кортеж
+            tv = cort(fit(v,r,c),r,c)               # преобразовываем вариант в кортеж
             if first:
                 nabor = variants(v,r,c)         # набор правильных кортежей
             if nabor.count(tv):             # если вариант есть в наборе, то этот вариант подходящий
