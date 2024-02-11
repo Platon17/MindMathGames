@@ -34,7 +34,8 @@ from services.best_path import find_path
 from aiogram.fsm.context import FSMContext
 from aiogram.fsm.state import default_state, State, StatesGroup
 from aiogram.fsm.storage.memory import MemoryStorage
-
+config = config.load_config()
+BOT_TOKEN: str = config.tg_bot.token
 storage = MemoryStorage()
 dp = Dispatcher(storage=storage)
 async def start_bot(bot: Bot):
@@ -45,7 +46,7 @@ async def main():
     #
     logging.basicConfig(level=logging.INFO)
     bot = Bot(
-        token=config.BOT_TOKEN,
+        token=BOT_TOKEN,
         parse_mode=ParseMode.HTML,
     )
     # dp.startup.register(start_bot)     # отправить сообщение о включении бота
