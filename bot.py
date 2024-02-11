@@ -12,7 +12,6 @@ from data import FSM_state, idPlaton
 
 
 from aiogram.filters import BaseFilter # для создания своих фильтров
-from aiogram import types
 from aiogram.filters import Command, StateFilter, or_f
 from aiogram.utils import markdown
 from aiogram.enums import ParseMode
