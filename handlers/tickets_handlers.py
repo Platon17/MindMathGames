@@ -29,7 +29,7 @@ router_tickets = Router()
 
 async def show_task_ticket(message: types.Message, state: FSMContext):
     await message.answer(text='solve_ticket')
-    numbers=gen_ticket(6, 6, 9, '+-*_/')
+    numbers=gen_ticket(4, 8, 9, '+-*_/')
     await state.update_data(ticket=numbers)
 
     kb = [

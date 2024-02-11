@@ -4,8 +4,7 @@ from data import FSM_state, max_variants
 from filters.cutting_filters import WordCutting, WordSolveCutting, WordTrainCutting, WordTrainCutting, RightCutting
 from filters.main_filters import strDict, WordExampl
 from services.services import _txt
-from services.tickets import numbers_opers,gen_ticket, solve as ticket_solve
-
+from services.cutting import m_to_str,cut
 from aiogram import Router
 from aiogram.fsm.context import FSMContext
 
@@ -29,6 +28,8 @@ router_cutting = Router()
 @router_cutting.message(WordCutting())
 async def cutting(message: types.Message, state: FSMContext):
     await state.set_state(FSM_state.wCutting)
+    await message.answer(text=_txt('chosen_cutting',message.from_user.id))
+    await message.answer(text=_txt('need_cutting', message.from_user.id))
     kb = [
         [
             types.KeyboardButton(text=_txt('back', message.from_user.id)),
@@ -98,19 +99,20 @@ async def examples_tickets(message: types.Message):
 @router_cutting.message(WordCutting(), RightCutting())
 @router_cutting.message(StateFilter(FSM_state.wCutting), RightCutting())
 async def solve_cutting(message: types.Message, state: FSMContext, matrix: list):
-    await message.answer(text=cutting.m_to_str(matrix))
+    await message.answer(text=m_to_str(matrix))
     userdata = await state.get_data()
-    n_cutting = userdata.get['n_cutting', 2]
-    excess_cutting = userdata.get['excess_cutting', 0]
-    all_cutting = userdata.get['all_cutting', False]
-    result = cutting.cut(matrix, n_cutting, excess_cutting, all_cutting)
+    n_cutting = userdata.get('n_cutting', 2)
+    excess_cutting = userdata.get('excess_cutting', 0)
+    all_cutting = userdata.get('all_cutting', False)
+    result = cut(matrix, n_cutting, excess_cutting, all_cutting)
     if result:
-        for res in result:
-            await message.answer(text=res)
+        res=result['result']
+        for v in res:
+            await message.answer(text=v)
     else:
         await message.answer(text=_txt('not_solve_cutting', message.from_user.id))
     await message.answer(text=_txt('try_again_cutting', message.from_user.id))
-    state.set_state(FSM_state.wCutting)
+    await state.set_state(FSM_state.wCutting)
 
 # Options Cutting
 @router_cutting.message(StateFilter(FSM_state.wCutting))

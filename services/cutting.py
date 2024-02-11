@@ -59,7 +59,7 @@ def rev_v(g): # относительно диагонали
 # функция возвращает кортеж кортежей точек, которые равны
 def variants(v:list[int],r:int,c:int) -> tuple:
     frames = []
-    f = fit(v)                      # матрица обрезанная
+    f = fit(v,r,c)                      # матрица обрезанная
     frames.append(cort(f))          # 1 оригинал
     f  = rotate(f)
     cf = cort(f)
@@ -108,7 +108,7 @@ def print_m(ttm:tuple, r:int, c:int, sch = 'X0THSZAVBC'):
         print()
     print()
 
-def t_to_str(ttm:tuple, r:int, c:int, sch = 'X0THSZAVBC')->str:
+def t_to_str(ttm:tuple, r:int, c:int, sch = 'X0THSZAVBC', empty:str='-')->str:
     lines = ""
     for y in range(r):
         line = ""
@@ -125,7 +125,7 @@ def t_to_str(ttm:tuple, r:int, c:int, sch = 'X0THSZAVBC')->str:
                 nt += 1             # следующий кортеж
             if not dot:             # если этой координаты нет ни в одном кортеже
                 #print('.', end=' ')
-                line += '.'
+                line += empty
         lines+=line+'\n'
     return lines
 
@@ -155,9 +155,9 @@ def cutnn(ssm:list, sm:list, tdots:tuple, r:int, c:int, n:int, l:int, all:bool=F
                     break
             if not unique: continue
 
-            tv = cort(fit(v))               # преобразовываем вариант в кортеж
+            tv = cort(fit(v,r,c))               # преобразовываем вариант в кортеж
             if first:
-                nabor = variants(v)         # набор правильных кортежей
+                nabor = variants(v,r,c)         # набор правильных кортежей
             if nabor.count(tv):             # если вариант есть в наборе, то этот вариант подходящий
                 df = list(tdots)            # передаем кортеж в список
                 for i in v: df.remove(i)    # убираем из списка координаты фигуры
@@ -186,8 +186,12 @@ def cutn(tdots:tuple, r:int, c:int, n:int, excess:int=0, all:bool=False) -> tupl
 	# excess
 	# all
 	
-def m_to_mb(m,r,c,d) -> list:
+def m_to_mb(m:str) -> dict:
+    result:dict = {}
     mb:list=[]
+    r: int = len(m)
+    c: int = 0
+    d: int = 0
     for s in m: 			# строка с клавиатуры
         str_mb:[bool] = []	# строка матрицы [True,False]
         cs = 0          	# количество символов в строке
@@ -196,14 +200,14 @@ def m_to_mb(m,r,c,d) -> list:
                 k = int(ch)         # количество пустых клеток
                 cs += k             # увеличим количество символов в строке на n
                 for i in range(k):  # n пустых клеток
-                    sm.append(False)
+                    str_mb.append(False)
             else:
                 cs += 1             # количество символов в строке на 1
                 if ch == '+':       # если + то, это клетка фигуры
-                    sm.append(True)
+                    str_mb.append(True)
                     d += 1
                 else:               # иначе пустая клетка
-                    sm.append(False)
+                    str_mb.append(False)
         if cs > c: c = cs           # максимально длинную строку храним в с
         mb.append(str_mb)  			# добавляем строку матрицы в исходную матрицу
     # дополняем исходную матрицу до квадратной матрицы
@@ -215,7 +219,12 @@ def m_to_mb(m,r,c,d) -> list:
     if r < c:           # если количество строк меньше количества колонок, добавим пустые строки
         for i in range(c - r):
             mb.append([False] * c)
-        r = c	
+        r = c
+    result['mb']=mb
+    result['r'] = r
+    result['c'] = c
+    result['d'] = d
+    return result
 
 def mb_to_dots(mb,r,c) -> list:		
     dots = []    # список с номерами клеток
@@ -225,16 +234,17 @@ def mb_to_dots(mb,r,c) -> list:
             dots.append(i)
     return dots
 
-def m_to_str(m):		
+def m_to_str(m):
     if not m: return ""
-    r:int=len(m)
-    c = 0       # количество колонок
-    d = 0       # количество клеток в фигуре
-    mb:List=m_to_mb(m,r,c,d)
-    dots:List = mb_to_dots(mb,r,c)# список с номерами клеток
-    sm:List=[]
+    mb_dict:dict=m_to_mb(m)
+    mb = mb_dict['mb']
+    r = mb_dict['r']
+    c = mb_dict['c'] # количество колонок
+    d = mb_dict['d'] # количество клеток в фигуре
+    dots:list = mb_to_dots(mb,r,c)# список с номерами клеток
+    sm:list=[]
     sm.append(dots)
-    return result.append(t_to_str(sm, r, c))
+    return t_to_str(tuple(sm), r, c)
 	
 
 def cut(m, n:int, excess:int=0, all:bool=False) -> dict:
@@ -242,11 +252,11 @@ def cut(m, n:int, excess:int=0, all:bool=False) -> dict:
 #	lines:list[]=text.split('\n')
 #	m:list=[line.split() for line in lines]
     if not m: return False
-    #r:int=len(lines)
-    r:int=len(m)
-    c = 0       # количество колонок
-    d = 0       # количество клеток в фигуре
-    mb:list=m_to_mb(m,r,c,d)
+    mb_dict:dict=m_to_mb(m)
+    mb = mb_dict['mb']
+    r = mb_dict['r']
+    c = mb_dict['c'] # количество колонок
+    d = mb_dict['d'] # количество клеток в фигуре
     if (d - excess) % n != 0: return False
     # создадим кортеж в котором будут номера клеток фигуры
     dots:list = mb_to_dots(mb,r,c)# список с номерами клеток
@@ -256,7 +266,7 @@ def cut(m, n:int, excess:int=0, all:bool=False) -> dict:
     result:list=[]
     for sm in ssm:
         result.append(t_to_str(sm, r, c))
-    res_dict['rusult']=result
+    res_dict['result']=result
     res_dict['time']=time.thread_time() - start
 
     return res_dict

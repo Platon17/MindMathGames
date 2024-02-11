@@ -36,6 +36,5 @@ class WordSolveCutting(BaseFilter):
 class RightCutting(BaseFilter):
     async def __call__(self, message: Message) -> bool:
         lines: list = message.text.split('\n')
-        matrix: list = [line.split() for line in lines]
-        if matrix: return {'matrix': matrix}
+        if lines: return {'matrix': lines}
         return False
