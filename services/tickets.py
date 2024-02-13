@@ -144,8 +144,6 @@ def gen_ticket(min_n:int, max_n:int, max_m:int, opers:str='+-*_/')->list:
 	return str_to_num(ticket)
 
 if __name__ == "__main__":
-	print(gen_ticket(5, 10, 20, '+-*_/'))
-	exit()
 	print("Программа билетики может:")
 	print("1. Решить задачу")
 	print("2. Сгенерировать")

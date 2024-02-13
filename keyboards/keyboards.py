@@ -21,7 +21,7 @@ def create_inline_kb(width: int,
     if kwargs:
         for button, text in kwargs.items():
             buttons.append(InlineKeyboardButton(
-                text=_txt(text,id),
+                text=text,
                 callback_data=button))
 
     # Распаковываем список с кнопками в билдер методом row c параметром width
@@ -47,7 +47,7 @@ def create_kb(width: int,
     if kwargs:
         for button, text in kwargs.items():
             buttons.append(KeyboardButton(
-                text=_txt(text,id),
+                text=text,
                 callback_data=button))
 
     # Распаковываем список с кнопками в билдер методом row c параметром width
@@ -72,7 +72,7 @@ def create_kb_ru(width: int,
     if kwargs:
         for button, text in kwargs.items():
             buttons.append(KeyboardButton(
-                text=_text(text,'ru'),
+                text=text,
                 callback_data=button))
 
     # Распаковываем список с кнопками в билдер методом row c параметром width

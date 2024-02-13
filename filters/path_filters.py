@@ -48,3 +48,9 @@
             'n_row': r,
             'n_col': c}
             return False
+
+    class RightBestPath(BaseFilter):
+        async def __call__(self, message: Message) -> bool:
+	     if int(message.text)>0:
+                return {'best_path': matrix}
+            return False
