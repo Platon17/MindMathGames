@@ -101,7 +101,7 @@ async def path(message: types.Message, state: FSMContext):
                           ),
             sep="\n"
         ),
-        reply_markup= create_kb(4,message.from_user.id, 'btn_back', 'btn_home', 'btn_examples', 'btn_options',**BTN_EXMPL)
+        reply_markup=create_kb(4,message.from_user.id, 'btn_back', 'btn_home', 'btn_examples', 'btn_options',**BTN_EXMPL)
 
     )
 
