@@ -19,7 +19,6 @@ from handlers import solve_handlers
 
 from aiogram.fsm.state import default_state, State, StatesGroup
 
-
 # Инициализируем роутер уровня модуля
 router_main = Router()
 #router_main.message.filter(StateFilter(default_state))     # фильтрация
@@ -35,7 +34,7 @@ async def to_lang(message: types.Message, state: FSMContext):
                 _text('what_lang4', 'ru')+_text('what_lang4', 'en'),
                 sep="\n"
             ),
-            reply_markup=create_kb_ru(3, 'btnRU', 'btnEN', 'btnDE', 'btnCH','btnJP')
+            reply_markup=create_kb_ru(4, 'btnRU', 'btnEN', 'btnDE', 'btnCH')
         )
     await state.set_state(FSM_state.wLang)
 
@@ -53,7 +52,6 @@ async def mm(message: types.Message, state: FSMContext):
             ),
             reply_markup=create_kb(3,message.from_user.id, 'btn_solve', 'btn_train', 'btn_research', 'btn_speak','btn_AI','btn_language')
         )
-        await message.answer(text=_txt('about1', message.from_user.id))
         await state.clear()
 
 

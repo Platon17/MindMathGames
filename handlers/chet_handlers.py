@@ -1,9 +1,11 @@
 # Хэндлеры главного меню
 from var import user_dict
 from data import FSM_state, max_variants
-from filters.tickets_filters import WordTicket, WordSolveTicket, WordGiveUp, WordExamplTicket, WordTrainTicket, RightTicket, RightOpers
-from filters.main_filters import strDict, WordExampl, WordOptions
-from services.services import _txt
+from filters.chet_filters import WordChet, WordTainChet, WordSolveChet, RightChet
+    #WordTicket, WordSolveTicket, WordGiveUp, WordExamplTicket, WordTrainTicket, RightTicket, RightOpers)
+from filters.main_filters import WordGiveUp, WordExampl, WordOptions
+from services.services import _txt, _sLine
+from services.chet import solve_str, gen_chet
 
 
 from aiogram import Router
@@ -21,8 +23,8 @@ from handlers import tickets_handlers
 router_chet = Router()
 
 # ==== TRAIN chet ===
-@router_chet.message(WordTrainChet())
-@router_chet.message(StateFilter(FSM_state.wChet),WordPath())
+#@router_chet.message(WordTrainChet())
+@router_chet.message(StateFilter(FSM_state.wChet),WordChet())
 async def show_task_chet(message: types.Message, state: FSMContext):
     await message.answer(text='solve_chet')
     chet=gen_chet(5,10,5,10,20)
@@ -42,10 +44,10 @@ async def give_up_chet(message: types.Message,state: FSMContext):
     chet = userdata.get('chet')
     results = solve_chet(chet)
     if results:
-		for line in results:
-			await message.answer(text=_sLine(line))
-	else:
-		await message.answer(text=_txt('not_solve_chet',message.from_user.id))
+        for line in results:
+            await message.answer(text=_sLine(line))
+    else:
+        await message.answer(text=_txt('not_solve_chet',message.from_user.id))
     await show_task_chet(message,state)
 
 # TRY ANSWER
@@ -55,10 +57,10 @@ async def ans_chet(message: types.Message, chet: list, state: FSMContext):
     chet = userdata.get('chet')
     results = solve_str(chet)
     if results:
-		if message.text in results.get('result'):
-			await message.answer(text=_txt('right', message.from_user.id))
-		else:
-	        await message.answer(text=_txt('try_again',message.from_user.id))
+        if message.text in results.get('result'):
+            await message.answer(text=_txt('right', message.from_user.id))
+        else:
+            await message.answer(text=_txt('try_again',message.from_user.id))
     else:
         await message.answer(text=_txt('not_solve_chet',message.from_user.id))
 
@@ -74,13 +76,13 @@ async def ans_chet_wrong(message: types.Message, state: FSMContext):
 #@router_chet.message(F.text.startwith('Р±РёР»РµС‚'))
 @router_chet.message(F.text.startwith('Chet'))
 @router_chet.message(F.text.startwith('chet'))
-@router_chet.message(Wordchet())
+@router_chet.message(WordChet())
 async def chet(message: types.Message, state: FSMContext):
-    await state.set_state(FSM_state.wchet)
-	# examples buttons
-	BTN_EXMPL:dict={}
-	for i in range(4):
-		BTN_EXMPL['btn_exmpl_'+str(i)]=m_to_str(gen_chet(5,10,5,10,20)))
+    await state.set_state(FSM_state.wChet)
+    # examples buttons
+    BTN_EXMPL:dict={}
+    for i in range(4):
+        BTN_EXMPL['btn_exmpl_'+str(i)]=m_to_str(gen_chet(5,10,5,10,20))
 
     await message.answer(
         text=markdown.text(
@@ -95,17 +97,17 @@ async def chet(message: types.Message, state: FSMContext):
 
 @router_chet.message(StateFilter(FSM_state.wChet), RightChet())
 #@router_chet.message(Wordchet())
-async def solve_chet(message: Message, state: FSMContext):
-    results = solve_str(message.text)
+async def solve_chet(message: types.Message, state: FSMContext):
+    results = solve_chet_str(message.text)
     if results:
-		result=results.get('result')
-		for line in result:
-			await message.answer(text=_sLine(line))
+        result=results.get('result')
+        for line in result:
+            await message.answer(text=_sLine(line))
     else:
         await message.answer(text=_txt('not_solve_chet',message.from_user.id))
-    await message.answer(text=_txt('try_again_chet', , message.from_user.id))
+    await message.answer(text=_txt('try_again_chet',message.from_user.id))
     state.set_state(FSM_state.wChet)
 
 @router_chet.message(StateFilter(FSM_state.wChet))
-async def wrong_chet(message: Message):
+async def wrong_chet(message: types.Message):
     await message.answer(text='wrong_chet')

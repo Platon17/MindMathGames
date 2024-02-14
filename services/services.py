@@ -21,6 +21,28 @@ lexicon = {
     'en': LEXICON_EN
 }
 
+def _sPath(line: str) -> str:
+    newLine: str = ''
+    n:int = 0
+    for ch in line:
+        if ch == 'R':
+            n+=1
+    after = 0
+    before = n
+    for ch in line:
+        newLine = newLine + _sym(ch)
+        if ch == 'R':
+            after  = after+1
+            before = n - after
+        if ch == 'D':
+            newLine = newLine + _sym('_')*before + '\n' + _sym('_')*after
+    return newLine + _sym('#')
+
+lexicon = {
+    'ru': LEXICON_RU,
+    'en': LEXICON_EN
+}
+
 # язык смотрит в словаре
 def _txt(param: str, id:int) -> str:
     n: int = 0

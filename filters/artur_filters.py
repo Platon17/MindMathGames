@@ -1,39 +1,39 @@
 from aiogram.types import Message
 from services.services import _txt, _some
 from aiogram.filters import BaseFilter  # для создания своих фильтров
-from services.tickets import str_to_numbers
-class WordTicket(BaseFilter):
+#from services.arturs import str_to_numbers
+class WordArtur(BaseFilter):
     async def __call__(self, message: Message) -> bool:
-        if message.text.lower().find(_txt('f_ticket', message.from_user.id)) != -1:
+        if message.text.lower().find(_txt('f_artur', message.from_user.id)) != -1:
             return True
         return False
 
 
-class WordSolveTicket(BaseFilter):
+class WordSolveArtur(BaseFilter):
     async def __call__(self, message: Message) -> bool:
-        if (message.text.lower().find(_txt('f_solve', message.from_user.id)) >= 0) and (message.text.lower().find(_txt('f_ticket', message.from_user.id)) >= 0):
+        if (message.text.lower().find(_txt('f_solve', message.from_user.id)) >= 0) and (message.text.lower().find(_txt('f_artur', message.from_user.id)) >= 0):
             return True
         return False
 
-class WordTrainTicket(BaseFilter):
+class WordTrainArtur(BaseFilter):
     async def __call__(self, message: Message) -> bool:
         if (message.text.lower().find(_txt('f_train', message.from_user.id)) >= 0) and (
-                message.text.lower().find(_txt('f_ticket', message.from_user.id)) >= 0):
+                message.text.lower().find(_txt('f_artur', message.from_user.id)) >= 0):
             return True
         return False
 
-class WordExamplTicket(BaseFilter):
+class WordExamplArtur(BaseFilter):
     async def __call__(self, message: Message) -> bool:
         if not (message.text.lower().find(_txt('f_exampl', message.from_user.id)) == -1) and not (
-                message.text.lower().find(_txt('f_ticket', message.from_user.id)) == -1):
+                message.text.lower().find(_txt('f_artur', message.from_user.id)) == -1):
             return True
         return False
 
 
-class WordTainTicket(BaseFilter):
+class WordTainArtur(BaseFilter):
     async def __call__(self, message: Message) -> bool:
         if not (message.text.lower().find(_txt('f_train', message.from_user.id)) == -1) and not (
-                message.text.lower().find(_txt('f_ticket', message.from_user.id)) == -1):
+                message.text.lower().find(_txt('f_artur', message.from_user.id)) == -1):
             return True
         return False
 
@@ -43,13 +43,12 @@ class WordGiveUp(BaseFilter):
             return True
         return False
 # Ищет в сообщение то, что можно принять за билет (цифры)
-class RightTicket(BaseFilter):
+class RightArtur(BaseFilter):
     async def __call__(self, message: Message)->bool:
-        ticket_dict: dict = {}
-        ticket_dict = str_to_numbers(message.text.replace(',', ' ').replace(':', ' ').replace(';', ' ').strip())
-        numbers = ticket_dict.get('numbers')
-        if len(numbers)>2:
-            return ticket_dict
+        artur_dict: dict = {}
+        artur_dict = str_to_numbers(message.text.replace(',', ' ').replace(':', ' ').replace(';', ' ').strip())
+        if artur_dict:
+            return artur_dict
         return False
 
 class RightOpers(BaseFilter):

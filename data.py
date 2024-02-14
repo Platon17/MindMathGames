@@ -19,6 +19,12 @@ class FSM_state(StatesGroup):
     wAnsCutting = State()
     wPath = State()
     wAnsPath = State()
+    wSimm = State()
+    wAnsSimm = State()
+    wChet = State()
+    wAnsChet = State()
+    wArtur = State()
+    wArturCoin = State()
 
 idPlaton = 1157076572
 max_variants = 30

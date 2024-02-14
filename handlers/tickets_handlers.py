@@ -81,7 +81,7 @@ async def give_up_ticket(message: types.Message,state: FSMContext):
             await message.answer(text=_sLine(res))
             n_var += 1
     else:
-        await message.answer(text=_txt('wrong1', message.from_user.id))
+        await message.answer(text=_txt('wrong1', message.from_user.id)+'gu')
 
     await state.set_state(FSM_state.wAnsTicket)
     await show_task_ticket(message,state)
@@ -176,7 +176,7 @@ async def solve_ticket(message: types.Message, state: FSMContext, numbers: list,
             await message.answer(text=_sLine(res))
             n_var += 1
     else:
-        await message.answer(text=_txt('wrong1', message.from_user.id))
+        await message.answer(text=_txt('wrong1', message.from_user.id)+"solve ticket")
     await message.answer(text=_txt('wait_more1', message.from_user.id))
     await state.set_state(FSM_state.wTicket)
 

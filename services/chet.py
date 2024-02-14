@@ -1,28 +1,30 @@
 import time                         # подключаем модуль time
 from copy import deepcopy
+from random import randint
 
-def gen_m(min_r:int, max_r:int, max_c:int, max_c:int, procent:int)->list:
-	r:int = randint(min_n,max_n)
-	c:int = randint(min_n,max_n)
+def gen_chet(min_r:int, max_r:int, min_c:int, max_c:int, procent:int)->list:
+	r:int = randint(min_r,max_r)
+	c:int = randint(min_c,max_c)
 	m:list = [[False] * c for i in range(r)]  # пустая матрица
-	for i in range(r*c*procent//100)
+	for i in range(r*c*procent//100):
 		p = randint(0,r*c-1)
 		m[p//c][p%c]=not m[p//c][p%c]
 	return m
 
-def m_to_str(m,ch='_X')->str:
-	line:str = ''
+
+def m_to_str(m:list[bool],ch='_X')->str:
+    line:str = ''
     for y in range(0, len(m)):
         for x in range(0, len(m[0])):
             if m[y][x]:
                 line = line + ch[1]
             else:
                 line = line + ch[0]
-        line = line + '/n'
-	return line
+            line = line + '/n'
+    return line
 	
 	
-def print_m(m,ch='_X'):
+def print_m(m:list[bool],ch='_X'):
     for y in range(0, len(m)):
         for x in range(0, len(m[y])):
             if m[y][x]:
@@ -32,9 +34,9 @@ def print_m(m,ch='_X'):
         print()
     print()
 
-def dot(m,x,y,q=1)->list:
-	r:int = len(m)
-	c:int = len(m[0])
+def dot(m:list[bool],x,y,q=1)->list:
+    r:int = len(m)
+    c:int = len(m[0])
     for i in range(0-q, 1+q):       # y
         for j in range(0-q, 1+q):   # x
             y_ = y + i
@@ -53,7 +55,7 @@ def dot_to_str(dot, r:int,c:int,ch:str='_X')->str:
 def solve(mb:list,q:int=3,all:bool=False)->dict:
 	result:dict={}	
 	r:int=len(dm)
-	if r=0: return result
+	if r==0: return result
 	c:int=len(dm[0])
 	empty = [[False] * c for i in range(r)]    # пустая матрица
 	k = r*c 		# количество клеток
@@ -92,8 +94,8 @@ def solve(mb:list,q:int=3,all:bool=False)->dict:
 	return result
 
 def solve_str(m_str:str,q:int=3,all:bool=False)->dict:
-	result:dict={}	
-	dm:list = []  		# матрицы
+    result:dict={}
+    dm:list = []  		# матрицы
     c = 0       		# количество колонок
     lines:list=m_str.split('/n')
     for line in lines:
@@ -121,8 +123,8 @@ def solve_str(m_str:str,q:int=3,all:bool=False)->dict:
         for j in range(len(dm[i]), c):
             dm[i].append(False)	
 
-	result['result'] = solve(dm,False).get('result')
-	return result
+    result['result'] = solve(dm,False).get('result')
+    return result
 	
 	
 def unuse():
@@ -163,10 +165,6 @@ if __name__ == "__main__":
     for i in range(r):
         for j in range(len(dm[i]), c):
             dm[i].append(False)
-    ldots = solve(dm,False).['result']
-	for dots in ldots:
-		print(dot_to_str(dots,r,c))
-		
-	
-	
-
+    ldots = solve(dm,False).get('result')
+    for dots in ldots:
+        print(dot_to_str(dots,r,c))

@@ -1,10 +1,11 @@
 # Хэндлеры главного меню
 from var import user_dict
 from data import FSM_state, max_variants
-from filters.tickets_filters import WordTicket, WordSolveTicket, WordGiveUp, WordExamplTicket, WordTrainTicket, RightTicket, RightOpers
+from filters.artur_filters import WordArtur
+    #WordTicket, WordSolveTicket, WordGiveUp, WordExamplTicket, WordTrainTicket, RightTicket, RightOpers)
 from filters.main_filters import strDict, WordExampl, WordOptions
 from services.services import _txt
-
+from services.artur import solve
 
 from aiogram import Router
 from aiogram.fsm.context import FSMContext
@@ -28,7 +29,7 @@ router_artur = Router()
 @router_artur.message(F.text.startwith('Artur'))
 @router_artur.message(F.text.startwith('artur'))
 @router_artur.message(WordArtur())
-
+@router_artur.message(StateFilter(FSM_state.wReserch))
 async def artur(message: types.Message, state: FSMContext):
     await state.set_state(FSM_state.wArtur)
     await message.answer(
@@ -57,7 +58,7 @@ async def artur_coin(message: types.Message, state: FSMContext):
     )
 
 @router_artur.message(StateFilter(FSM_state.wArtur))
-async def wrong_knights(message: Message):
+async def wrong_knights(message: types.Message):
     await message.answer(text='wrong_knights')
 
 @router_artur.message(StateFilter(FSM_state.wArturCoin),
@@ -70,27 +71,25 @@ async def artur_research(message: types.Message, state: FSMContext):
     coins = userdata.get('coins')
     result = solve(knights,coins)
     if result:
-	sucsess:int=result.get['sucsess'])
-        status:str=result.get['status'])
-        n_op:list=result.get['n_op'])
+        sucsess:int=result.get('sucsess')
+        status:str=result.get('status')
+        n_op:list=result.get('n_op')
 
 #	if len(result)<n_artur_op:
-	if len(result)<30:
-	  for r in status:
-	    await message.answer(text=' '.join(r))
+    if len(result)<30:
+        for r in status:
+            await message.answer(text=' '.join(r))
         else:
-	  for i in range(10):
-	    await message.answer(text=' '.join(status[i]))
-	  await message.answer(text='...')
-	  for i in range(n_op-10,n_op):
-	    await message.answer(text=' '.join(status[i]))
+            for i in range(10):
+                await message.answer(text=' '.join(status[i]))
+            await message.answer(text='...')
+            for i in range(n_op-10,n_op):
+                await message.answer(text=' '.join(status[i]))
 
-	await message.answer(text=_txt('artur_n_op', message.from_user.id)+n_op)
-        await message.answer(text=_txt('artur_sucsess', message.from_user.id)+sucsess)
-
-    )
+    await message.answer(text=_txt('artur_n_op', message.from_user.id)+n_op)
+    await message.answer(text=_txt('artur_sucsess', message.from_user.id)+sucsess)
     await artur(message, state)
 
 @router_artur.message(StateFilter(FSM_state.wArturCoin))
-async def wrong_knights(message: Message):
+async def wrong_knights(message: types.Message):
     await message.answer(text='wrong_coins')

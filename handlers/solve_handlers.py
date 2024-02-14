@@ -19,11 +19,11 @@ from handlers import tickets_handlers, cutting_handlers, path_handlers, simm_han
 router_solve = Router()
 #router_solve.message.filter(StateFilter(default_state)) # фильтрация
 router_solve.include_router(tickets_handlers.router_tickets)   # БИЛЕТЫ
-router_solve.include_router(cutting_handlers.router_cutting)   # РАЗРЕЗАНИЕ
 router_solve.include_router(path_handlers.router_path)          # ЛУЧШИЙ ПУТЬ
 router_solve.include_router(simm_handlers.router_simm)          # СИММЕТРИЯ
 router_solve.include_router(chet_handlers.router_chet)          # ЧЕТНО-НЕЧЕТНО
 router_solve.include_router(artur_handlers.router_artur)         # ДЕЛЁЖ КОРОЛЯ АРТУРА
+router_solve.include_router(cutting_handlers.router_cutting)   # РАЗРЕЗАНИЕ
 
 # РЕШАТЬ
 @router_solve.message(Command('solve'))
@@ -113,11 +113,13 @@ async def AI(message: types.Message, state: FSMContext):
         reply_markup=create_kb(4, message.from_user.id, 'btn_back', 'btn_home', 'btn_quotes', 'btn_jokes', 'btn_sport', 'btn_politic', 'btn_computers', 'btn_weather','btn_music', 'btn_video', 'btn_avto', 'btn_AI')
     )
     await state.set_state(FSM_state.wSpeak)
-    @router_solve.message(F.text == '⬅️ Назад', StateFilter(FSM_state.wCutting))
-    @router_solve.message(F.text == '⬅️ Назад', StateFilter(FSM_state.wPath))
-    @router_solve.message(F.text == '⬅️ Назад', StateFilter(FSM_state.wTicket))
-    async def back_mm(message: types.Message, state: FSMContext):
-        await solve(message, state)
-        await state.set_state(FSM_state.wSolve)
+@router_solve.message(F.text == '⬅️ Назад', StateFilter(FSM_state.wCutting))
+@router_solve.message(F.text == '⬅️ Назад', StateFilter(FSM_state.wPath))
+@router_solve.message(F.text == '⬅️ Назад', StateFilter(FSM_state.wTicket))
+@router_solve.message(F.text == '⬅️ Назад', StateFilter(FSM_state.wChet))
+@router_solve.message(F.text == '⬅️ Назад', StateFilter(FSM_state.wSimm))
+async def back_sm(message: types.Message, state: FSMContext):
+    await solve(message, state)
+    await state.set_state(FSM_state.wSolve)
 
         #                          | (F.text == '⬅️ Back'), (StateFilter(FSM_state.wCutting) | StateFilter(FSM_state.wPath) | StateFilter(FSM_state.wTicket)))

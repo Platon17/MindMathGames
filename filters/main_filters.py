@@ -25,3 +25,9 @@ class WordOptions(BaseFilter):
         if message.text.lower().find(_txt('options', message.from_user.id)) != -1:
             return True
         return False
+
+class WordGiveUp(BaseFilter):
+    async def __call__(self, message: Message) -> bool:
+        if message.text.lower().find(_txt('f_give_up', message.from_user.id)) >= 0 :
+            return True
+        return False
