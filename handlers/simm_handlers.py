@@ -86,7 +86,7 @@ async def simm(message: types.Message, state: FSMContext):
     # examples buttons
     BTN_EXMPL:dict={}
     for i in range(4):
-        BTN_EXMPL['btn_exmpl_' + str(i)] = gen_simm_str(7, 7, 7, 7, 15)
+        BTN_EXMPL['btn_exmpl_' + str(i)] = gen_simm_str(8, 12, 8, 12, 15)
     await message.answer(
         text=markdown.text(
             _txt('txt_solve_simm', message.from_user.id),
