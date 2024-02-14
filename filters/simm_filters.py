@@ -45,23 +45,6 @@ class WordGiveUp(BaseFilter):
 # Ищет в сообщение то, что можно принять за билет (цифры)
 class RightSimm(BaseFilter):
     async def __call__(self, message: Message)->bool:
-        simm_dict: dict = {}
-        simm_dict = str_to_numbers(message.text.replace(',', ' ').replace(':', ' ').replace(';', ' ').strip())
-        if simm_dict:
-            return simm_dict
-        return False
-
-class RightOpers(BaseFilter):
-    async def __call__(self, message: Message) -> bool:
-        if message.text.find('=')<0:
-            return False
-        opers = ""
-        op = '+-*/_ ='
-        for ch in message.text:
-            if ch in op:
-                if ch != ' ':
-                    opers += ch
-                else:
-                    opers += '_'
-        if opers: return {'opers': opers}
+        if message.text.count('+')>3:
+            return True
         return False

@@ -4,27 +4,27 @@ from aiogram.filters import BaseFilter  # для создания своих ф�
 # >>> ================= Chet ===========================
 class WordChet(BaseFilter):
     async def __call__(self, message: Message) -> bool:
-        if not (message.text.lower().find(_txt('s_chet')) == -1):
+        if message.text.lower().find(_txt('f_chet', message.from_user.id)) != -1:
             return True
         return False
 
 class WordSolveChet(BaseFilter):
     async def __call__(self, message: Message) -> bool:
-        if not (message.text.lower().find(_txt('s_solve')) == -1) and not (
-                message.text.lower().find(_txt('s_chet')) == -1):
+        if not (message.text.lower().find(_txt('f_solve', message.from_user.id)) == -1) and not (
+                message.text.lower().find(_txt('f_chet', message.from_user.id)) == -1):
             return True
         return False
 
 class WordTainChet(BaseFilter):
     async def __call__(self, message: Message) -> bool:
-        if not (message.text.lower().find(_txt('s_train', message.from_user.id)) == -1) and not (
-                message.text.lower().find(_txt('s_chet', message.from_user.id)) == -1):
+        if not (message.text.lower().find(_txt('f_train', message.from_user.id)) == -1) and not (
+                message.text.lower().find(_txt('f_chet', message.from_user.id)) == -1):
             return True
         return False
 
 # если в тексет больше 3 плюсов +-
 class RightChet(BaseFilter):
     async def __call__(self, message: Message) -> bool:
-        if message.text.count('+')>3: return False
+        if message.text.count('+')>3: return True
         return True
             

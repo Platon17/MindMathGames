@@ -234,7 +234,25 @@ def mb_to_dots(mb,r,c) -> list:
             dots.append(i)
     return dots
 
-def m_to_str(m):
+def m_tostr(m, d:list[bool]=None, ch = '_XO')->str:
+	line:str=''
+	r:int=len(m)
+	c:int=len(m[0])
+	for y in range(0, r):
+		for x in range(0, c):
+			if m[y][x]:
+				if d:
+					if (y*c+x) in d:
+						line = line + ch[2]
+					else:
+						line = line + ch[1]
+				else:
+					line = line + ch[1]
+			else:
+				line = line + ch[0]
+		line = line + '\n'
+	return line
+def m_to_str(m:list)->dict:
     if not m: return ""
     mb_dict:dict=m_to_mb(m)
     mb = mb_dict['mb']
@@ -245,7 +263,31 @@ def m_to_str(m):
     sm:list=[]
     sm.append(dots)
     return t_to_str(tuple(sm), r, c)
-	
+def str_m(m_str:str)->list[bool]:
+    dm: list[bool] = []   # матрицы
+    c = 0  # количество колонок
+    lines: list = m_str.split('\n')
+    for line in lines:
+        sm: list[bool] = []  # строка матрицы [True,False]
+        cs = 0  # количество символов в строке
+        for ch in line:  # перебираем символы в строке
+            if (ch.isdigit()) and (ch != '0'):  # если цифра и не 0
+                n = int(ch)  # количество пустых клеток
+                cs += n  # увеличим количество символов в строке на n
+                for j in range(n):  # n пустых клеток
+                    sm.append(False)
+            else:
+                cs += 1  # количество символов в строке на 1
+                if ch == '+':  # если + то, это клетка фигуры
+                    sm.append(True)
+                else:  # иначе пустая клетка
+                    sm.append(False)
+        if cs > c: c = cs  # максимально длинную строку храним в с
+        dm.append(sm)  # добавляем строку матрицы в исходную матрицу
+    return dm
+def str_m_str(m_str:str)->str:
+    return m_tostr(str_m(m_str))
+
 
 def cut(m, n:int, excess:int=0, all:bool=False) -> dict:
     res_dict: dict[str,[int|bool|tuple]] = {}

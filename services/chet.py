@@ -1,6 +1,7 @@
 import time                         # подключаем модуль time
 from copy import deepcopy
 from random import randint
+from itertools import combinations  # составление комбинаций
 
 def gen_chet(min_r:int, max_r:int, min_c:int, max_c:int, procent:int)->list:
 	r:int = randint(min_r,max_r)
@@ -11,6 +12,21 @@ def gen_chet(min_r:int, max_r:int, min_c:int, max_c:int, procent:int)->list:
 		m[p//c][p%c]=not m[p//c][p%c]
 	return m
 
+def gen_chet_str(min_r:int, max_r:int, min_c:int, max_c:int, procent:int)->str:
+	m:list = gen_chet(min_r, max_r, min_c, max_c, procent)
+	r = len(m)
+	c = len(m[0])
+	lines:list = []
+	for y in range(r):
+		line:str = ''
+		for x in range(c):
+			if m[y][x]:
+				line=line+'+'
+			else:
+				line=line+'_'
+		lines.append(line)
+	return '\n'.join(lines)
+
 
 def m_to_str(m:list[bool],ch='_X')->str:
     line:str = ''
@@ -20,7 +36,7 @@ def m_to_str(m:list[bool],ch='_X')->str:
                 line = line + ch[1]
             else:
                 line = line + ch[0]
-            line = line + '/n'
+        line = line + '\n'
     return line
 	
 	
@@ -45,85 +61,74 @@ def dot(m:list[bool],x,y,q=1)->list:
                 m[y_][x_] = not(m[y_][x_])
     return m
 
-def dot_to_str(dot, r:int,c:int,ch:str='_X')->str:
-	line:str = ''
-	m = [[False] * c for i in range(r)]    # пустая матрица
-	for dot in dots:
-		m[dot//r][dot%c] = True
-	return m_to_str(m,ch)
+def dot_to_str(dots, r:int,c:int,ch:str='_X')->str:
+    m = [[False] * c for i in range(r)]    # пустая матрица
+    for dot in dots:
+        m[dot//r][dot%c] = True
+    return m_to_str(m,ch)
 
-def solve(mb:list,q:int=3,all:bool=False)->dict:
-	result:dict={}	
-	r:int=len(dm)
-	if r==0: return result
-	c:int=len(dm[0])
-	empty = [[False] * c for i in range(r)]    # пустая матрица
-	k = r*c 		# количество клеток
-	nv = k**k       # количество вариантов
-	results:list=[]
-	for v in range(nv):  # перебираем все возможные варианты от 0000 до v
-		#print(v)
-		# для каждого варианта высчитаем комбинацию знаков
-		f = v
-		dots:list = []             # матрица точек
-		skip = False
-		if f == 0:              # если клетка 0
-			dots.append(0)
-		while f > 0:
-			p = f % k           # номер клетки находим как остаток от деления на количество клеток
-			if not(dots.count(p)):
-				f = f // k
-				dots.append(p)
-			else:               # если в матрице точек уже есть эта позиция, выходим
-				skip = True
-				f = 0
-		if skip:                # если в матрице точек уже есть эта позиция пропускаем этот вариант, не будем ставить точки
-			continue
-	#    print(d)
-		m:list = deepcopy(empty)
-		for p in dots:
-			m = dot(m,p%c,(p//c)%k,q)
-		if m == mb:
-			results.append(dots)
-			if not all:
-				break
-	lines:list=[]
-	for dots in results:
-		lines.append(dot_to_str(dots,r,c))
-	result['result'] = lines
-	return result
-
-def solve_str(m_str:str,q:int=3,all:bool=False)->dict:
+def solve(mb:list,q:int=1,all:bool=False)->dict:
     result:dict={}
-    dm:list = []  		# матрицы
-    c = 0       		# количество колонок
-    lines:list=m_str.split('/n')
+    r:int=len(mb)
+    if r==0: return result
+    c:int=len(mb[0])
+    empty = [[False] * c for i in range(r)]    # пустая матрица
+    k = r*c 		# количество клеток
+    results:list=[]
+    v_dots: list = []  # матрица точек
+    for i in range(k):
+        v_dots.append(i)
+    for kd in range(1,k+1):
+        for dots in combinations(v_dots,kd):
+            m:list = deepcopy(empty)
+            for p in dots:
+                m = dot(m,p%c,(p//c)%k,q)
+            if m == mb:
+                results.append(dots)
+                if not all:
+                    break
+    lines:list=[]
+    for dots in results:
+        lines.append(dot_to_str(dots,r,c))
+    result['result'] = lines
+    return result
+
+
+def str_to_m(m_str:str)->list[bool]:
+    dm: list[bool] = []   # матрицы
+    c:int = 0  # количество колонок
+    lines: list = m_str.split('\n')
     for line in lines:
-        sm:list = []  	# строка матрицы [True,False]
-        cs = 0          # количество символов в строке
-        for ch in line:    # перебираем символы в строке
-            if ch.isdigit():        # если цифра
-                n = int(ch)         # количество пустых клеток
-                cs += n             # увеличим количество символов в строке на n
+        sm: list[bool] = []  # строка матрицы [True,False]
+        cs = 0  # количество символов в строке
+        for ch in line:  # перебираем символы в строке
+            if (ch.isdigit()) and (ch != '0'):  # если цифра и не 0
+                n = int(ch)  # количество пустых клеток
+                cs += n  # увеличим количество символов в строке на n
                 for j in range(n):  # n пустых клеток
                     sm.append(False)
             else:
-                cs += 1             # количество символов в строке на 1
-                if ch == '+':       # если + то, это клетка фигуры
+                cs += 1  # количество символов в строке на 1
+                if ch == '+':
                     sm.append(True)
-                    p += 1
-                else:               # иначе пустая клетка
+                else:
                     sm.append(False)
-        if cs > c: c = cs           # максимально длинную строку храним в с
-        dm.append(sm)  # добавляем строку матрицы в исходную матрицу
-
-    # дополняем исходную матрицу до квадратной матрицы
-    if c < r: c = r     # если количество колонок меньше количества строк, добавим строки пустыми символами
-    for i in range(r):
+                if cs > c:
+                    c = cs
+        dm.append(sm)
+    for i in range(len(dm)):
         for j in range(len(dm[i]), c):
-            dm[i].append(False)	
+            dm[i].append(False)
+    return dm
 
-    result['result'] = solve(dm,False).get('result')
+def str_m_str(m_str:str)->str:
+	return m_to_str(str_to_m(m_str))
+
+
+def solve_chet_str(m_str:str,q:int=1,all:bool=False)->dict:
+    result:dict={}
+    res = solve(str_to_m(m_str), q, all)
+    result['result'] = res.get('result')
     return result
 	
 	

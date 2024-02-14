@@ -192,7 +192,7 @@ LEXICON_RU: dict[str, str] = {
 
 
     'result_cutting1':'Это было легко!',
-
+    'try_again_path': 'Введите другую матрицу чисел.',
     'txt_research':'Исследование оче',
     'txt_speak':'Я очень люблю болтать',
     'politics':'politics',

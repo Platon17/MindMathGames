@@ -2,10 +2,11 @@
 from var import user_dict
 from data import FSM_state, max_variants
 from filters.simm_filters import WordSimm, WordTainSimm, WordSolveSimm, WordExamplSimm, WordTrainSimm, WordGiveUp, RightSimm
+from keyboards.keyboards import create_inline_kb, create_kb, create_kb_ru
 #WordSimm, WordSolveTicket, WordGiveUp, WordExamplTicket, WordTrainTicket, RightTicket, RightOpers
 from filters.main_filters import strDict, WordExampl, WordOptions
 from services.services import _txt,_sLine
-from services.simm import solve_simm_str, gen_simm
+from services.simm import solve_simm_str, gen_simm_str, str_m_str, m_to_str, str_to_m
 
 from aiogram import Router
 from aiogram.fsm.context import FSMContext
@@ -25,7 +26,7 @@ router_simm = Router()
 @router_simm.message(StateFilter(FSM_state.wPath),WordSimm())
 async def show_task_Simm(message: types.Message, state: FSMContext):
     await message.answer(text='solve_simm')
-    simm=gen_simm(5,10,5,10,20)
+    simm=gen_simm_str(5,10,5,10,20)
     await state.update_data(simm=simm)
     await message.answer(
         text= simm,
@@ -40,7 +41,7 @@ async def show_task_Simm(message: types.Message, state: FSMContext):
 async def give_up_simm(message: types.Message,state: FSMContext):
     userdata = await state.get_data()
     simm = userdata.get('simm')
-    results = solve_str(simm)
+    results = solve_simm_str(simm)
     if results:
         result=results.get('result')
         for res in results:
@@ -85,11 +86,10 @@ async def simm(message: types.Message, state: FSMContext):
     # examples buttons
     BTN_EXMPL:dict={}
     for i in range(4):
-        BTN_EXMPL['btn_exmpl_'+str(i)]='/n'.join(gen_simm(5,10,5,10))
-
+        BTN_EXMPL['btn_exmpl_' + str(i)] = gen_simm_str(7, 7, 7, 7, 15)
     await message.answer(
         text=markdown.text(
-            _txt('txt_solve_Simm'),
+            _txt('txt_solve_simm', message.from_user.id),
             markdown.text(_txt('input_Simm', message.from_user.id),
                           ),
             sep="\n"
@@ -100,16 +100,17 @@ async def simm(message: types.Message, state: FSMContext):
 
 @router_simm.message(StateFilter(FSM_state.wSimm), RightSimm())
 #@router_simm.message(WordSimm())
-async def solve_Simm(message: types.Message, state: FSMContext, matrix: list, n_raw: int, n_col: int):
+async def solve_simm(message: types.Message, state: FSMContext):
+    await message.answer(text=_sLine(str_m_str(message.text)))
     results = solve_simm_str(message.text)
     if results:
-        result=results.get('result')
+        results=results.get('result')
         for res in results:
-            await message.answer(text=_sLine(res))
-        else:
-            await message.answer(text=_txt('not_solve_simm',message.from_user.id))
+            await message.answer(text=_sLine(m_to_str(str_to_m(message.text),res)))
+    else:
+        await message.answer(text=_txt('not_solve_simm',message.from_user.id))
     await message.answer(text=_txt('try_again_simm',message.from_user.id))
-    state.set_state(FSM_state.wSimm)
+    await state.set_state(FSM_state.wSimm)
 
 @router_simm.message(StateFilter(FSM_state.wSimm))
 async def wrong_simm(message: types.Message):

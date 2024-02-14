@@ -118,8 +118,4 @@ async def solve_path(message: types.Message, state: FSMContext, matrix: list):
 
 @router_path.message(StateFilter(FSM_state.wPath))
 async def wrong_path(message: types.Message):
-    await message.answer(text='wrong_path')
-
-@router_path.message()
-async def wrong_path(message: types.Message):
-    await message.answer(text='wrong_path')
+    await message.answer(text=_txt('wrong_path', message.from_user.id))

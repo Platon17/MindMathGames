@@ -1,19 +1,19 @@
 def solve(k:int,m:int)->dict:
     result: dict = {}
     if m % k != 0: return result
-    g:int = m % k   # монет на человека
+    g:int = m // k   # монет на человека
     r:list[int] = []
     p:list[int] = []
     for i in range(k):
         r.append(0)
         p.append(0)
-    r[m // 2] = m
+    r[k // 2] = m
     do = True
     status:list=[]
     cut: list = []
     success: bool = False
+    status.append(tuple(r))
     while do:
-        status.append(r)
         d = 0
         nd = 0
         for i in range(k):
@@ -31,17 +31,18 @@ def solve(k:int,m:int)->dict:
                 d += 1
             if (r[i] == 0) or (r[i] == g * 2):
                 nd += 1
+        status.append(tuple(r))
         if (d == k) or (nd == k):
             do = False
     if d == k:
         success = True
 
     if success:
-        result['n_op':len(status)]
+        result['n_op']=len(status)
     else:
-        result['n_op':0]
-    result['status':status]
-    result['sucsess':success]
+        result['n_op']=0
+    result['status']=status
+    result['sucsess']=success
 
     return result
 

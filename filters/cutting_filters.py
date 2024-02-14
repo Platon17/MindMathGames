@@ -28,8 +28,12 @@ class WordSolveCutting(BaseFilter):
 
 class RightCutting(BaseFilter):
     async def __call__(self, message: Message) -> bool:
-        lines: list = message.text.split('\n')
-        if lines: return {'matrix': lines}
+        np = message.text.count('+')
+        if np > 3 and np <= 40:
+            lines: list = message.text.split('\n')
+            return {'matrix': lines,
+                        'np': np
+                          }
         return False
 
 class BtnOption(BaseFilter):

@@ -11,13 +11,33 @@ def gen_simm(min_r:int, max_r:int, min_c:int, max_c:int, procent:int)->list:
 		m[p//c][p%c]=not m[p//c][p%c]
 	return m
 
-def m_to_str(m, d, ch = '_XO'):
-	line:str=[]
-	for y in range(0, len(m)):
-		for x in range(0, len(m[y])):
+def gen_simm_str(min_r:int, max_r:int, min_c:int, max_c:int, procent:int)->str:
+	m:list = gen_simm(min_r, max_r, min_c, max_c, procent)
+	r = len(m)
+	c = len(m[0])
+	lines:list = []
+	for y in range(r):
+		line:str = ''
+		for x in range(c):
 			if m[y][x]:
-				if d[y][x]:
-					line = line + ch[2]
+				line=line+'+'
+			else:
+				line=line+'_'
+		lines.append(line)
+	return '\n'.join(lines)
+
+def m_to_str(m, d:list[bool]=None, ch = '_XO')->str:
+	line:str=''
+	r:int=len(m)
+	c:int=len(m[0])
+	for y in range(0, r):
+		for x in range(0, c):
+			if m[y][x]:
+				if d:
+					if (y*c+x) in d:
+						line = line + ch[2]
+					else:
+						line = line + ch[1]
 				else:
 					line = line + ch[1]
 			else:
@@ -81,7 +101,7 @@ def solve(dm:list)->dict:
 					best = len(d)
 				best_m:list=[]
 				best_d = deepcopy(d)
-				best_m.append(best_d)
+				if best_m.count(tuple(best_d))==0: best_m.append(tuple(best_d))
 				best_sd = sy//2 * c + sx//2
 	
 	# поиск симметрий горизонтальной линии
@@ -106,7 +126,7 @@ def solve(dm:list)->dict:
 				best = len(d)
 			best_m:list=[]
 			best_d = deepcopy(d)
-			best_m.append(best_d)
+			if best_m.count(tuple(best_d))==0: best_m.append(tuple(best_d))
 			best_sd = sy//2 * c
 	
 	# поиск симметрий относительно вертикальной линии
@@ -131,7 +151,7 @@ def solve(dm:list)->dict:
 				best = len(d)
 			best_m:list=[]
 			best_d = deepcopy(d)
-			best_m.append(best_d)
+			if best_m.count(tuple(best_d))==0: best_m.append(tuple(best_d))
 			best_sd = sx//2
 	
 	# поиск симметрий диагональ сверху вниз
@@ -154,7 +174,7 @@ def solve(dm:list)->dict:
 				best = len(d)
 			best_m:list=[]
 			best_d = deepcopy(d)
-			best_m.append(best_d)
+			if best_m.count(tuple(best_d))==0: best_m.append(tuple(best_d))
 			best_sd = 0
 	
 	# поиск симметрий диагональ снизу вверх
@@ -177,35 +197,41 @@ def solve(dm:list)->dict:
 				best = len(d)
 			best_m:list=[]
 			best_d = deepcopy(d)
-			best_m.append(best_d)
+			if best_m.count(tuple(best_d))==0: best_m.append(tuple(best_d))
 			best_sd = k
 	return {'result':best_m}
 
-
-def solve_simm_str(m_str:str) -> dict:
-	result: dict = {}
-	dm:list = [bool]  	# матрицы
-	c = 0  				# количество колонок
-	lines:list = m_str.split('/n')
+def str_to_m(m_str:str)->list[bool]:
+	dm: list[bool] = []   # матрицы
+	c = 0  # количество колонок
+	lines: list = m_str.split('\n')
 	for line in lines:
-		sm: list = [bool]  # строка матрицы [True,False]
+		sm: list[bool] = []  # строка матрицы [True,False]
 		cs = 0  # количество символов в строке
 		for ch in line:  # перебираем символы в строке
-			if (ch.isdigit()) and (ch!='0'): 	# если цифра и не 0
-				n = int(ch) 				 	# количество пустых клеток
-				cs += n  						# увеличим количество символов в строке на n
-				for j in range(n):  			# n пустых клеток
+			if (ch.isdigit()) and (ch != '0'):  # если цифра и не 0
+				n = int(ch)  # количество пустых клеток
+				cs += n  # увеличим количество символов в строке на n
+				for j in range(n):  # n пустых клеток
 					sm.append(False)
 			else:
-				cs += 1  						# количество символов в строке на 1
-				if ch == '+':  					# если + то, это клетка фигуры
+				cs += 1  # количество символов в строке на 1
+				if ch == '+':  # если + то, это клетка фигуры
 					sm.append(True)
-				else:  							# иначе пустая клетка
+				else:  # иначе пустая клетка
 					sm.append(False)
 		if cs > c: c = cs  # максимально длинную строку храним в с
 		dm.append(sm)  # добавляем строку матрицы в исходную матрицу
+	return dm
+def str_m_str(m_str:str)->str:
+	return m_to_str(str_to_m(m_str))
+
+def solve_simm_str(m_str:str) -> dict:
+	result: dict = {}
+	dm:list[bool] = str_to_m(m_str)  	# матрицы
 	r: int = len(dm)
 	if r==0: return result
+	c: int = len(dm[0])  # количество колонок
 	k = r * c  # количество клеток
 	# поиск симметрий относительно точки
 	best = k
@@ -234,7 +260,7 @@ def solve_simm_str(m_str:str) -> dict:
 					best = len(d)
 					best_m: list = []
 				best_d = deepcopy(d)
-				best_m.append(best_d)
+				if best_m.count(tuple(best_d))==0: best_m.append(tuple(best_d))
 				best_sd = sy // 2 * c + sx // 2
 
 	# поиск симметрий горизонтальной линии
@@ -259,7 +285,7 @@ def solve_simm_str(m_str:str) -> dict:
 				best = len(d)
 				best_m: list = []
 			best_d = deepcopy(d)
-			best_m.append(best_d)
+			if best_m.count(tuple(best_d))==0: best_m.append(tuple(best_d))
 			best_sd = sy // 2 * c
 
 	# поиск симметрий относительно вертикальной линии
@@ -284,7 +310,7 @@ def solve_simm_str(m_str:str) -> dict:
 				best = len(d)
 				best_m: list = []
 			best_d = deepcopy(d)
-			best_m.append(best_d)
+			if best_m.count(tuple(best_d))==0: best_m.append(tuple(best_d))
 			best_sd = sx // 2
 
 	# поиск симметрий диагональ сверху вниз
@@ -307,7 +333,7 @@ def solve_simm_str(m_str:str) -> dict:
 				best = len(d)
 				best_m: list = []
 			best_d = deepcopy(d)
-			best_m.append(best_d)
+			if best_m.count(tuple(best_d))==0: best_m.append(tuple(best_d))
 			best_sd = 0
 
 	# поиск симметрий диагональ снизу вверх
@@ -330,7 +356,7 @@ def solve_simm_str(m_str:str) -> dict:
 				best = len(d)
 				best_m: list = []
 			best_d = deepcopy(d)
-			best_m.append(best_d)
+			if best_m.count(tuple(best_d))==0: best_m.append(tuple(best_d))
 			best_sd = k
 	return {'result': best_m}
 	

@@ -22,8 +22,8 @@ router_solve.include_router(tickets_handlers.router_tickets)   # БИЛЕТЫ
 router_solve.include_router(path_handlers.router_path)          # ЛУЧШИЙ ПУТЬ
 router_solve.include_router(simm_handlers.router_simm)          # СИММЕТРИЯ
 router_solve.include_router(chet_handlers.router_chet)          # ЧЕТНО-НЕЧЕТНО
-router_solve.include_router(artur_handlers.router_artur)         # ДЕЛЁЖ КОРОЛЯ АРТУРА
-router_solve.include_router(cutting_handlers.router_cutting)   # РАЗРЕЗАНИЕ
+router_solve.include_router(artur_handlers.router_artur)        # ДЕЛЁЖ КОРОЛЯ АРТУРА
+router_solve.include_router(cutting_handlers.router_cutting)    # РАЗРЕЗАНИЕ
 
 # РЕШАТЬ
 @router_solve.message(Command('solve'))
