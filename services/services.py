@@ -32,7 +32,7 @@ def _sPath(line: str) -> str:
     for ch in line:
         newLine = newLine + _sym(ch)
         if ch == 'R':
-            after  = after+1
+            after = after+1
             before = n - after
         if ch == 'D':
             newLine = newLine + _sym('_')*before + '\n' + _sym('_')*after
