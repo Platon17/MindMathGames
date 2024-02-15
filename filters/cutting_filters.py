@@ -1,6 +1,7 @@
 from aiogram.types import Message
 from services.services import _txt, _some
 from aiogram.filters import BaseFilter  # для создания своих фильтров
+from data import max_n_cutting
 
 class WordExamplCutting(BaseFilter):
     async def __call__(self, message: Message) -> bool:
@@ -29,7 +30,7 @@ class WordSolveCutting(BaseFilter):
 class RightCutting(BaseFilter):
     async def __call__(self, message: Message) -> bool:
         np = message.text.count('+')
-        if np > 3 and np <= 40:
+        if np > 3 and np <= max_n_cutting:
             lines: list = message.text.split('\n')
             return {'matrix': lines,
                         'np': np

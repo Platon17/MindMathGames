@@ -2,6 +2,7 @@ import time                         # подключаем модуль time
 from copy import deepcopy
 from random import randint
 from itertools import combinations  # составление комбинаций
+from data import max_n_chet
 
 def gen_chet(min_r:int, max_r:int, min_c:int, max_c:int, procent:int)->list:
     r:int = randint(min_r,max_r)
@@ -81,6 +82,8 @@ def solve(mb:list,q:int=1,all:bool=False)->dict:
     for i in range(k):
         v_dots.append(i)
     for kd in range(1,k+1):
+        if kd > max_n_chet:
+            break
         for dots in combinations(v_dots,kd):
             m:list = deepcopy(empty)
             for p in dots:

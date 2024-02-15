@@ -25,6 +25,8 @@ class WordTainChet(BaseFilter):
 # если в тексет больше 3 плюсов +-
 class RightChet(BaseFilter):
     async def __call__(self, message: Message) -> bool:
-        if message.text.count('+')>3: return True
+        np = message.text.count('+')
+        if np > 0:
+            return True
         return True
             
