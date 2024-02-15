@@ -4,7 +4,7 @@ from data import FSM_state, max_variants
 from filters.cutting_filters import WordCutting, WordSolveCutting, WordTrainCutting, WordTrainCutting, RightCutting, BtnOption
 from filters.main_filters import strDict, WordExampl
 from services.services import _txt, _sLine
-from services.cutting import m_to_str,cut,str_m_str
+from services.cutting import m_to_str,cut,str_m_str,gen_cutting_str
 from aiogram import Router
 from aiogram.fsm.context import FSMContext
 from keyboards.keyboards import create_inline_kb, create_kb, create_kb_ru
@@ -16,10 +16,16 @@ from aiogram.filters import Command, StateFilter
 from aiogram.utils import markdown
 from aiogram.enums import ParseMode
 
+
+
 # ==================================================
 # >>> ================= CUTTING ====================
 # ==================================================
 router_cutting = Router()
+
+@router_cutting.message(StateFilter(FSM_state.wCutting), F.text=='🎲 Случайный пример')
+async def examples_tickets(message: types.Message, state: FSMContext):
+    await cutting(message,state)
 
 @router_cutting.message(StateFilter(FSM_state.wCutting),F.text=='🔧 Настройки')
 @router_cutting.message(StateFilter(FSM_state.wCutting),F.text.endswith('астройки'))
@@ -78,55 +84,22 @@ async def set_options_cutting_all(message: types.Message, state: FSMContext):
 @router_cutting.message(WordCutting())
 async def cutting(message: types.Message, state: FSMContext):
     await state.set_state(FSM_state.wCutting)
+
+    BTN_EXMPL: dict = {}
+    for i in range(8):
+        BTN_EXMPL['btn_exmpl_' + str(i)] = gen_cutting_str(3, 5, 3, 5, 80)
+    await message.answer(text=_txt('quote100', message.from_user.id))
     await message.answer(text=_txt('chosen_cutting',message.from_user.id))
     await message.answer(text=_txt('need_cutting', message.from_user.id))
+
     await message.answer(
         text=markdown.text(_txt('need_tickets',message.from_user.id),sep="\n"),
-        reply_markup=create_kb(4, message.from_user.id, 'btn_back', 'btn_home', 'btn_examples', 'btn_options',
-                               '++++',
-                               '+..+\n+..+',
-                               '++++\n+..+\n+..+',
-                               '+..+\n+..+\n+..+\n+..+'),
+        reply_markup=create_kb(4, message.from_user.id, 'btn_back', 'btn_home', 'btn_examples', 'btn_options',**BTN_EXMPL),
     )
 
 # ==== EXAMPLES cutting ===
 #@router_cutting.message(WordExamplCutting())
-@router_cutting.message(StateFilter(FSM_state.wCutting), WordExampl())
-#@router_cutting.message(StateFilter(FSM_state.wCutting), F.text == _txt('examples'))
-async def examples_tickets(message: types.Message):
-    await message.answer(text="keyboard with examples")
-    kb = [
-        [
-            types.KeyboardButton(text=_txt('back', message.from_user.id)),
-            types.KeyboardButton(text=_txt('home', message.from_user.id)),
-            types.KeyboardButton(text='++++'),
-        ],
-        [
 
-            types.KeyboardButton(text='+..+\n+..+'),
-            types.KeyboardButton(text='++++\n+..+\n+..+'),
-            types.KeyboardButton(text='+..+\n+..+\n+..+\n+..+'),
-        ]
-    ]
-
-    keyboard = types.ReplyKeyboardMarkup(
-        keyboard=kb,
-        resize_keyboard=True,
-        input_field_placeholder=_txt('txt_solve_tickets')
-    )
-    await message.answer(
-        text=markdown.text(
-            _txt('txt_solve_ticket'),
-            markdown.text(_txt('input_ticket'),
-                          ),
-            sep="\n"
-        ),
-        reply_markup=keyboard
-    )
-
-
-@router_cutting.message(WordTrainCutting(), RightCutting())
-@router_cutting.message(WordCutting(), RightCutting())
 @router_cutting.message(StateFilter(FSM_state.wCutting), RightCutting())
 async def solve_cutting(message: types.Message, state: FSMContext, matrix: list, np:int):
     await message.answer(text=_sLine(str_m_str(message.text)))
@@ -277,7 +250,6 @@ async def give_up_cutting(message: types.Message, state: FSMContext):
 #	await message.answer(text=_txt('lets_do',message.from_user.id))
 #	await state.clear()
 
-@router_cutting.message(WordCutting)
 @router_cutting.message(StateFilter(FSM_state.wCutting))
 async def wrong_cutting(message: types.Message):
     await message.answer(text='wrong_cutting')

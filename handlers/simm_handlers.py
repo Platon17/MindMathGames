@@ -21,18 +21,22 @@ from handlers import tickets_handlers
 # Инициализируем роутер уровня модуля
 router_simm = Router()
 
+
+@router_simm.message(StateFilter(FSM_state.wSimm), F.text=='🎲 Случайный пример')
+async def examples_tickets(message: types.Message, state: FSMContext):
+    await simm(message,state)
 # ==== TRAIN SIMM ===
 @router_simm.message(WordTrainSimm())
 @router_simm.message(StateFilter(FSM_state.wPath),WordSimm())
 async def show_task_Simm(message: types.Message, state: FSMContext):
-    await message.answer(text='solve_simm')
+    await message.answer(text=_txt('solve_simm', message.from_user.id))
     simm=gen_simm_str(5,10,5,10,20)
     await state.update_data(simm=simm)
     await message.answer(
         text= simm,
         reply_markup=create_kb(2,message.from_user.id, 'btn_back', 'btn_home','btn_give_up')
     )
-    await message.answer(text='for_give_up')
+    await message.answer(text=_txt('for_give_up', message.from_user.id))
     await state.set_state(FSM_state.wAnsSimm)
 
 # GIVE UP
@@ -85,12 +89,13 @@ async def simm(message: types.Message, state: FSMContext):
     await state.set_state(FSM_state.wSimm)
     # examples buttons
     BTN_EXMPL:dict={}
-    for i in range(4):
+    for i in range(8):
         BTN_EXMPL['btn_exmpl_' + str(i)] = gen_simm_str(8, 12, 8, 12, 15)
+    await message.answer(text=_txt('quote100', message.from_user.id))
     await message.answer(
         text=markdown.text(
             _txt('txt_solve_simm', message.from_user.id),
-            markdown.text(_txt('input_Simm', message.from_user.id),
+            markdown.text(_txt('input_simm', message.from_user.id),
                           ),
             sep="\n"
         ),

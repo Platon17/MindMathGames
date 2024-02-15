@@ -16,13 +16,13 @@ class WordTrainCutting(BaseFilter):
 
 class WordCutting(BaseFilter):
     async def __call__(self, message: Message) -> bool:
-        if message.text.lower().find(_txt('f_cut', message.from_user.id)) > 0:
+        if message.text.lower().find(_txt('f_cut', message.from_user.id)) != -1:
             return True
         return False
 
 class WordSolveCutting(BaseFilter):
     async def __call__(self, message: Message) -> bool:
-        if not (message.text.lower().find(_txt('sol', message.from_user.id)) == -1) and not (message.text.lower().find(_txt('cut', message.from_user.id)) == -1):
+        if not (message.text.lower().find(_txt('f_sol', message.from_user.id)) == -1) and not (message.text.lower().find(_txt('f_cut', message.from_user.id)) == -1):
             return True
         return False
 

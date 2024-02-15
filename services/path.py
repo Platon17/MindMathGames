@@ -1,6 +1,30 @@
 from random import randint
 #import numpy as np
 
+def str_to_list(text:str)->str:
+    lines: list = text.split('\n')
+    m: list = [line.split() for line in lines]
+    r = len(m)
+    c = 0
+    for row in m:
+        cc = 0
+        for s in row:
+            if not s.isdigit():
+                return False
+            cc += 1
+            if c < cc: c = cc
+    # дополняем исходную матрицу 0
+    for i in range(r):
+        for j in range(len(m[i]), c):
+            m[i].append('0')
+
+    p: list[int][int] = [[0] * c for i in range(r)]  # mattrix
+    for i in range(r):
+        for j in range(c):
+            p[i][j] = int(m[i][j])
+    return p
+
+
 def gen_path(min_n:int, max_n:int, min_m:int, max_m:int, min_p:int, max_p:int)->list:
     n = randint(min_n,max_n)
     m = randint(min_m, max_m)

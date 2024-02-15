@@ -27,5 +27,9 @@ class FSM_state(StatesGroup):
     wArturCoin = State()
 
 idPlaton = 1157076572
-max_variants = 30
+max_variants = 20
 max_n_tickets = 15
+max_n_knights = 15
+max_n_cutting = 41
+max_n_simm = 100
+max_n_chet = 16

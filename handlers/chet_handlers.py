@@ -23,7 +23,9 @@ from handlers import tickets_handlers
 # Инициализируем роутер уровня модуля
 router_chet = Router()
 
-
+@router_chet.message(StateFilter(FSM_state.wChet), F.text=='🎲 Случайный пример')
+async def examples_tickets(message: types.Message, state: FSMContext):
+    await chet(message,state)
 
 # ==== TRAIN chet ===
 #@router_chet.message(WordTrainChet())
@@ -36,7 +38,7 @@ async def show_task_chet(message: types.Message, state: FSMContext):
         text= _sLine(m_to_str(chet)),
         reply_markup=create_kb(2,message.from_user.id, 'btn_back', 'btn_home','btn_give_up')
     )
-    await message.answer(text='for_give_up')
+    await message.answer(text=_txt('for_give_up', message.from_user.id))
     await state.set_state(FSM_state.wAnsChet)
 
 # GIVE UP
@@ -75,6 +77,8 @@ async def ans_chet_wrong(message: types.Message, state: FSMContext):
 #@router_chet.message(message.text == _txt('chet'))
 
 @router_chet.message(Command('chet'))
+@router_chet.message(F.text=='🔢 Чётное-нечётное')
+@router_chet.message(F.text.startwith('Чётн'))
 @router_chet.message(F.text.startwith('Чётн'))
 @router_chet.message(F.text.startwith('Четн'))
 @router_chet.message(F.text.startwith('чётн'))
@@ -85,9 +89,9 @@ async def ans_chet_wrong(message: types.Message, state: FSMContext):
 async def chet(message: types.Message, state: FSMContext):
     # examples buttons
     BTN_EXMPL:dict={}
-    for i in range(4):
-        BTN_EXMPL['btn_exmpl_'+str(i)]=gen_chet_str(5,10,5,10,20)
-
+    for i in range(8):
+        BTN_EXMPL['btn_exmpl_'+str(i)]=gen_chet_str(3,6,3,6,10)
+    await message.answer(text=_txt('quote100', message.from_user.id))
     await message.answer(
         text=markdown.text(
             _txt('txt_solve_chet', message.from_user.id),
@@ -107,8 +111,11 @@ async def solve_chet(message: types.Message, state: FSMContext):
     results = solve_chet_str(message.text)
     if results:
         result=results.get('result')
-        for line in result:
-            await message.answer(text=_sLine(line))
+        if results:
+            for line in result:
+                await message.answer(text=_sLine(line))
+        else:
+            await message.answer(text=_txt('not_solve_chet', message.from_user.id))
     else:
         await message.answer(text=_txt('not_solve_chet',message.from_user.id))
     await message.answer(text=_txt('try_again_chet',message.from_user.id))

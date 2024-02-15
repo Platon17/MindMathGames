@@ -61,6 +61,7 @@ async def wrong_knights(message: types.Message):
 lambda x: x.text.isdigit() and 1 <=int(x.text)<=1000)
 async def artur_research(message: types.Message, state: FSMContext):
     await state.set_state(FSM_state.wArtur)
+    await message.answer(text=_txt('quote100', message.from_user.id))
     await state.update_data(coins=int(message.text))
     userdata = await state.get_data()
     knights = userdata.get('knights')

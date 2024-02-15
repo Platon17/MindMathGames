@@ -43,7 +43,7 @@ async def to_options_tickets(message: types.Message, state: FSMContext):
 @router_tickets.message(WordTrainTicket())
 @router_tickets.message(StateFilter(FSM_state.wTrain),WordTicket())
 async def show_task_ticket(message: types.Message, state: FSMContext):
-    await message.answer(text='solve_ticket')
+    await message.answer(text=_txt('solve_ticket', message.from_user.id))
     userdata = await state.get_data()
     operates = userdata.get('operates', '+-*/_')
     all_tickets = userdata.get('all_tickets', True)
@@ -54,7 +54,7 @@ async def show_task_ticket(message: types.Message, state: FSMContext):
         reply_markup=create_kb(2,message.from_user.id, 'btn_back', 'btn_home', 'btn_options', 'btn_give_up')
     )
 
-    await message.answer(text='for_give_up')
+    await message.answer(text=_txt('for_give_up', message.from_user.id))
     await state.set_state(FSM_state.wAnsTicket)
 
 # GIVE UP
@@ -116,42 +116,23 @@ async def wrong_ans_ticket(message: types.Message, state: FSMContext):
 @router_tickets.message(F.text.startwith('ticekt'))
 @router_tickets.message(WordTicket())
 async def tickets(message: types.Message, state: FSMContext):
+    BTN_EXMPL:dict={}
+    for i in range(8):
+        BTN_EXMPL['btn_exmpl_'+str(i)]='  '.join(gen_ticket(4, 6, 9, '+-*/'))
+    await message.answer(text=_txt('quote100', message.from_user.id))
     await message.answer(
         text=markdown.text(_txt('need_tickets',message.from_user.id),sep="\n"),
-        reply_markup=create_kb(4,message.from_user.id, 'btn_back', 'btn_home', 'btn_examples', 'btn_options',
-                               '    '.join(gen_ticket(4, 6, 9, '+-*/')),
-                               '    '.join(gen_ticket(5, 7, 9, '+-*/')),
-                               '    '.join(gen_ticket(6, 8, 9, '+-*/')),
-                               '    '.join(gen_ticket(7, 9, 12, '+-*/')),
-                               '    '.join(gen_ticket(8, 10, 15, '+-*/')))
+        reply_markup=create_kb(4,message.from_user.id, 'btn_back', 'btn_home', 'btn_examples', 'btn_options',**BTN_EXMPL)
     )
     await state.set_state(FSM_state.wTicket)
 
 
 # ==== EXAMPLES TICKETS ===
-@router_tickets.message(WordExamplTicket())
-@router_tickets.message(StateFilter(FSM_state.wTicket), WordExampl())
-async def examples_tickets(message: types.Message):
-    kb = [
-        [
-            types.KeyboardButton(text=_txt('back', message.from_user.id)),
-            types.KeyboardButton(text=_txt('home', message.from_user.id)),
-            types.KeyboardButton(text='1231234=9'),
-        ],
-        [
-            types.KeyboardButton(text='1 2 3 4 5 6'),
-            types.KeyboardButton(text='2 2 2 2 = 8'),
-            types.KeyboardButton(text='1 2 3 4 7 8'),
-        ]
-    ]
-    keyboard = types.ReplyKeyboardMarkup(
-        keyboard=kb,
-        resize_keyboard=True
-    )
-    await message.answer(
-        text='',
-        reply_markup=keyboard
-    )
+#@router_tickets.message(WordExamplTicket())
+#@router_tickets.message(StateFilter(FSM_state.wTicket), WordExampl())
+@router_tickets.message(StateFilter(FSM_state.wTicket), F.text=='🎲 Случайный пример')
+async def examples_tickets(message: types.Message, state: FSMContext):
+    await tickets(message,state)
 
 # ==== SOLVE TICKET ===
 #получение и решение Билетика

@@ -22,7 +22,7 @@ def gen_simm_str(min_r:int, max_r:int, min_c:int, max_c:int, procent:int)->str:
 			if m[y][x]:
 				line=line+'+'
 			else:
-				line=line+'_'
+				line=line+'.'
 		lines.append(line)
 	return '\n'.join(lines)
 

@@ -4,28 +4,29 @@ from random import randint
 from itertools import combinations  # составление комбинаций
 
 def gen_chet(min_r:int, max_r:int, min_c:int, max_c:int, procent:int)->list:
-	r:int = randint(min_r,max_r)
-	c:int = randint(min_c,max_c)
-	m:list = [[False] * c for i in range(r)]  # пустая матрица
-	for i in range(r*c*procent//100):
-		p = randint(0,r*c-1)
-		m[p//c][p%c]=not m[p//c][p%c]
-	return m
+    r:int = randint(min_r,max_r)
+    c:int = randint(min_c,max_c)
+    k:int = r*c
+    m:list = [[False] * c for i in range(r)]  # пустая матрица
+    for i in range(k*procent//100):
+        p = randint(0,k)
+        m = dot(m, p % c, (p // c) % k)
+    return m
 
 def gen_chet_str(min_r:int, max_r:int, min_c:int, max_c:int, procent:int)->str:
-	m:list = gen_chet(min_r, max_r, min_c, max_c, procent)
-	r = len(m)
-	c = len(m[0])
-	lines:list = []
-	for y in range(r):
-		line:str = ''
-		for x in range(c):
-			if m[y][x]:
-				line=line+'+'
-			else:
-				line=line+'_'
-		lines.append(line)
-	return '\n'.join(lines)
+    m:list = gen_chet(min_r, max_r, min_c, max_c, procent)
+    r = len(m)
+    c = len(m[0])
+    lines:list = []
+    for y in range(r):
+        line:str = ''
+        for x in range(c):
+            if m[y][x]:
+                line=line+'+'
+            else:
+                line=line+'.'
+        lines.append(line)
+    return '\n'.join(lines)
 
 
 def m_to_str(m:list[bool],ch='_X')->str:
@@ -64,7 +65,7 @@ def dot(m:list[bool],x,y,q=1)->list:
 def dot_to_str(dots, r:int,c:int,ch:str='_X')->str:
     m = [[False] * c for i in range(r)]    # пустая матрица
     for dot in dots:
-        m[dot//r][dot%c] = True
+        m[dot//c][dot%c] = True
     return m_to_str(m,ch)
 
 def solve(mb:list,q:int=1,all:bool=False)->dict:

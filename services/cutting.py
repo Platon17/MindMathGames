@@ -1,5 +1,31 @@
 import time                         # подключаем модуль time
 from itertools import combinations  # составление комбинаций
+from random import randint
+
+def gen_cutting(min_r:int, max_r:int, min_c:int, max_c:int, procent:int)->list:
+    r:int = randint(min_r,max_r)
+    c:int = randint(min_c,max_c)
+    m:list = [[False] * c for i in range(r)]  # пустая матрица
+    for i in range(r*c*procent//100):
+        p = randint(0,r*c-1)
+        #m[p//c][p%c]=not m[p//c][p%c]
+        m[p//c][p%c] = True
+    return m
+
+def gen_cutting_str(min_r:int, max_r:int, min_c:int, max_c:int, procent:int)->str:
+    m:list = gen_cutting(min_r, max_r, min_c, max_c, procent)
+    r = len(m)
+    c = len(m[0])
+    lines:list = []
+    for y in range(r):
+        line:str = ''
+        for x in range(c):
+            if m[y][x]:
+                line=line+'+'
+            else:
+                line=line+'.'
+        lines.append(line)
+    return '\n'.join(lines)
 
 # функция выдаёт уменьшенную матрицу без лишних строк и столбцов
 # передаем функции набор точек
