@@ -108,7 +108,7 @@ async def chet(message: types.Message, state: FSMContext):
 @router_chet.message(StateFilter(FSM_state.wChet), RightChet())
 async def solve_chet(message: types.Message, state: FSMContext):
     await message.answer(text=_sLine(str_m_str(message.text)))
-    results = solve_chet_str(message.text)
+    results = solve_chet_str(message.text,1,False)
     if results:
         result=results.get('result')
         if results:

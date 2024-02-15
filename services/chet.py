@@ -77,6 +77,7 @@ def solve(mb:list,q:int=1,all:bool=False)->dict:
     k = r*c 		# количество клеток
     results:list=[]
     v_dots: list = []  # матрица точек
+    stop = False
     for i in range(k):
         v_dots.append(i)
     for kd in range(1,k+1):
@@ -87,7 +88,10 @@ def solve(mb:list,q:int=1,all:bool=False)->dict:
             if m == mb:
                 results.append(dots)
                 if not all:
+                    stop:True
                     break
+        if stop:
+            break
     lines:list=[]
     for dots in results:
         lines.append(dot_to_str(dots,r,c))

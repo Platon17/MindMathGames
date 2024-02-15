@@ -222,7 +222,7 @@ def m_to_mb(m:str) -> dict:
         str_mb:[bool] = []	# строка матрицы [True,False]
         cs = 0          	# количество символов в строке
         for ch in s:    	# перебираем символы в строке
-            if ch.isdigit():        # если цифра
+            if ch.isdigit() and ch!='0':        # если цифра
                 k = int(ch)         # количество пустых клеток
                 cs += k             # увеличим количество символов в строке на n
                 for i in range(k):  # n пустых клеток
