@@ -90,7 +90,7 @@ async def chet(message: types.Message, state: FSMContext):
     # examples buttons
     BTN_EXMPL:dict={}
     for i in range(8):
-        BTN_EXMPL['btn_exmpl_'+str(i)]=gen_chet_str(3,6,3,6,10)
+        BTN_EXMPL['btn_exmpl_'+str(i)]=gen_chet_str(5,8,5,8,10)
     await message.answer(text=_txt('quote100', message.from_user.id))
     await message.answer(
         text=markdown.text(
