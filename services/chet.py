@@ -88,7 +88,7 @@ def solve(mb:list,q:int=1,all:bool=False)->dict:
             if m == mb:
                 results.append(dots)
                 if not all:
-                    stop:True
+                    stop=True
                     break
         if stop:
             break
