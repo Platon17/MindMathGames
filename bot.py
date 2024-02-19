@@ -1,7 +1,6 @@
 
 import asyncio
 import logging
-from aiogram.fsm.storage.memory import MemoryStorage
 from aiogram.types import Message, Game
 
 from aiogram import Bot, F
@@ -28,8 +27,8 @@ from aiogram.fsm.storage.memory import MemoryStorage
 from aiogram.fsm.context import FSMContext
 from aiogram.fsm.state import default_state, State, StatesGroup
 
-from aiogram.fsm.storage.redis import RedisStorage, Redis
-#from aiogram.fsm.storage.memory import MemoryStorage # без Redis
+#from aiogram.fsm.storage.redis import RedisStorage, Redis
+from aiogram.fsm.storage.memory import MemoryStorage # без Redis
 config = config.load_config()
 BOT_TOKEN: str = config.tg_bot.token
 #storage = RedisStorage(redis=redis)
