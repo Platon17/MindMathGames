@@ -2,20 +2,21 @@ import time                         # подключаем модуль time
 from copy import deepcopy
 from random import randint
 from itertools import combinations  # составление комбинаций
-from data import max_n_chet
+from data import max_n_dots
 
-def gen_chet(min_r:int, max_r:int, min_c:int, max_c:int, procent:int)->list:
+def gen_chet(min_r:int, max_r:int, min_c:int, max_c:int, n_dots:int)->list:
     r:int = randint(min_r,max_r)
     c:int = randint(min_c,max_c)
     k:int = r*c
+    k_dots:int = randint(1,n_dots)
     m:list = [[False] * c for i in range(r)]  # пустая матрица
-    for i in range(k*procent//100):
+    for i in range(1,k_dots+1):
         p = randint(0,k)
         m = dot(m, p % c, (p // c) % k)
     return m
 
-def gen_chet_str(min_r:int, max_r:int, min_c:int, max_c:int, procent:int)->str:
-    m:list = gen_chet(min_r, max_r, min_c, max_c, procent)
+def gen_chet_str(min_r:int, max_r:int, min_c:int, max_c:int, n_dots:int)->str:
+    m:list = gen_chet(min_r, max_r, min_c, max_c, n_dots)
     r = len(m)
     c = len(m[0])
     lines:list = []
@@ -82,7 +83,7 @@ def solve(mb:list,q:int=1,all:bool=False)->dict:
     for i in range(k):
         v_dots.append(i)
     for kd in range(1,k+1):
-        if kd > max_n_chet:
+        if kd > max_n_dots:
             break
         for dots in combinations(v_dots,kd):
             m:list = deepcopy(empty)

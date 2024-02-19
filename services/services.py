@@ -1,11 +1,17 @@
 from aiogram.fsm.context import FSMContext
-from var import user_dict
 from random import randint
+from var import user_dict
 
 #  Мультиязычность
 from lexicon.lexicon_ru import LEXICON_RU  # подключаем лексикон русского языка
 from lexicon.lexicon_en import LEXICON_EN  # подключаем лексикон английского языка
 from lexicon.symbols import SYMBOLS  # подключаем лексикон английского языка
+
+async def _set(redis,key, value):
+    await redis.set(key, value)
+
+async def _get(redis,key):
+    return await redis.get(key)
 
 def _sym(param: str) -> str:
     return SYMBOLS.get(param,param)
@@ -43,6 +49,8 @@ lexicon = {
     'en': LEXICON_EN
 }
 
+def _load_user_dict(user_dict):
+    return user_dict
 # язык смотрит в словаре
 def _txt(param: str, id:int) -> str:
     n: int = 0
@@ -55,7 +63,8 @@ def _txt(param: str, id:int) -> str:
             break
     if n > 1:
         param = param[0:-k] + str(randint(1, n))
-    lang = user_dict[id].get('lang', 'ru')
+    u_dict = user_dict.get(str(id))
+    lang = u_dict.get('lang', 'ru')
     return lexicon.get(lang, lexicon[lang]).get(param, param)
 def _some(param: str, id:int) -> list:
     result:list =[]
@@ -67,7 +76,7 @@ def _some(param: str, id:int) -> list:
             n += int(param[i]) * 10 ** (k - 1)
         else:
             break
-    lang = user_dict[id].get('lang', 'ru')
+    lang = user_dict[str(id)].get('lang', 'ru')
     if n > 1:
         base:str = param[0:-k]
         for i in range(1,n):

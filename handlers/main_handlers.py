@@ -1,9 +1,9 @@
 # Хэндлеры главного меню
-from var import user_dict
+from var import user_dict, cutting_dict, chet_dict, tickets_dict
 from data import FSM_state, idPlaton
-from services.services import _text,_txt,_atext
+from services.services import _text,_txt,_atext,_set,_get, _load_user_dict
 from keyboards.keyboards import create_inline_kb, create_kb, create_kb_ru
-
+import json
 from aiogram import Router
 from aiogram.fsm.context import FSMContext
 
@@ -15,7 +15,12 @@ from aiogram.utils import markdown
 from aiogram.enums import ParseMode
 from handlers import sm_handlers
 
-
+async def load_dict(redis,str_dict):
+    json_dict = await redis.get(str_dict)
+    if json_dict:
+        return json.loads(json_dict)
+    else:
+        return {}
 
 from aiogram.fsm.state import default_state, State, StatesGroup
 
@@ -44,7 +49,9 @@ async def to_lang(message: types.Message, state: FSMContext):
 @router_main.message(F.text.endswith('усский'))
 @router_main.message(F.text.endswith('ussian'))
 async def set_lang_ru(message: types.Message, state: FSMContext):
-    user_dict[message.from_user.id] = {'lang': 'ru'}
+
+    user_dict[str(message.from_user.id)] = {'lang': 'ru'}
+#    await redis.set('user_dict', json.dumps(user_dict))
     await mm(message,state)
 
 @router_main.message(StateFilter(FSM_state.wLang), F.text=='🇬🇧English')
@@ -53,7 +60,8 @@ async def set_lang_ru(message: types.Message, state: FSMContext):
 @router_main.message(F.text.endswith('nglish'))
 @router_main.message(F.text.endswith('нглийский'))
 async def set_lang_en(message: types.Message, state: FSMContext):
-    user_dict[message.from_user.id] = {'lang': 'en'}
+    user_dict[str(message.from_user.id)] = {'lang': 'en'}
+    await redis.set('user_dict', json.dumps(user_dict))
     await mm(message,state)
 
 # знакомый язык, но без словаря
@@ -105,8 +113,12 @@ async def back_mm(message: types.Message, state: FSMContext):
 @router_main.message(F.text.endswith('tart'))
 @router_main.message(F.text.endswith('ачало'))
 async def start(message: types.Message, state: FSMContext):
+#    user_dict = await load_dict(redis, 'user_dict')
+#    cutting_dict = await load_dict(redis, 'cutting_dict')
+#    chet_dict = await load_dict(redis, 'chet_dict')
+#    tickets_dict = await load_dict(redis, 'tickets_dict')
     # если пользователь впервые, спросим язык
-    if message.from_user.id not in user_dict:
+    if str(message.from_user.id) not in user_dict:
         await message.answer(text=_text('hello3', 'ru')+"\n"+_text('hello3', 'en'))
         await to_lang(message, state)
     else:

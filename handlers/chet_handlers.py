@@ -1,13 +1,13 @@
 # Хэндлеры главного меню
-from var import user_dict
-from data import FSM_state, max_variants
+from var import chet_dict
+from data import FSM_state, max_n_chet, max_n_dots
 from filters.chet_filters import WordChet, WordTainChet, WordSolveChet, RightChet
     #WordTicket, WordSolveTicket, WordGiveUp, WordExamplTicket, WordTrainTicket, RightTicket, RightOpers)
 from filters.main_filters import WordGiveUp, WordExampl, WordOptions
 from services.services import _txt, _sLine
 from services.chet import solve_chet_str, gen_chet_str, m_to_str, str_m_str
 from keyboards.keyboards import create_inline_kb, create_kb, create_kb_ru
-
+import json
 
 from aiogram import Router
 from aiogram.fsm.context import FSMContext
@@ -32,7 +32,7 @@ async def examples_tickets(message: types.Message, state: FSMContext):
 @router_chet.message(StateFilter(FSM_state.wTrain),WordChet())
 async def show_task_chet(message: types.Message, state: FSMContext):
     await message.answer(text='solve_chet')
-    chet=gen_chet_str(3,6,3,6,50)
+    chet=gen_chet_str(3,max_n_chet,3,max_n_chet,max_n_dots)
     await state.update_data(chet=chet)
     await message.answer(
         text= _sLine(m_to_str(chet)),
@@ -79,7 +79,6 @@ async def ans_chet_wrong(message: types.Message, state: FSMContext):
 @router_chet.message(Command('chet'))
 @router_chet.message(F.text=='🔢 Чётное-нечётное')
 @router_chet.message(F.text.startwith('Чётн'))
-@router_chet.message(F.text.startwith('Чётн'))
 @router_chet.message(F.text.startwith('Четн'))
 @router_chet.message(F.text.startwith('чётн'))
 @router_chet.message(F.text.startwith('четн'))
@@ -90,7 +89,7 @@ async def chet(message: types.Message, state: FSMContext):
     # examples buttons
     BTN_EXMPL:dict={}
     for i in range(8):
-        BTN_EXMPL['btn_exmpl_'+str(i)]=gen_chet_str(4,6,4,6,20)
+        BTN_EXMPL['btn_exmpl_'+str(i)]=gen_chet_str(3, max_n_chet, 3, max_n_chet, max_n_dots)
     await message.answer(text=_txt('quote100', message.from_user.id))
     await message.answer(
         text=markdown.text(
@@ -108,7 +107,16 @@ async def chet(message: types.Message, state: FSMContext):
 @router_chet.message(StateFilter(FSM_state.wChet), RightChet())
 async def solve_chet(message: types.Message, state: FSMContext):
     await message.answer(text=_sLine(str_m_str(message.text)))
-    results = solve_chet_str(message.text,1,False)
+
+    results=chet_dict.get(message.text)
+    if not results: # есть нет в словаре
+        # решаем
+        results = solve_chet_str(message.text,1,False)
+        chet_dict[message.text]=results
+#        json_dict=json.dumps(chet_dict)
+#        await redis.set('chet_dict', json_dict)
+    else:
+        await message.answer(text=_txt('solved', message.from_user.id))
     if results:
         result=results.get('result')
         if results:
@@ -119,7 +127,7 @@ async def solve_chet(message: types.Message, state: FSMContext):
     else:
         await message.answer(text=_txt('not_solve_chet',message.from_user.id))
     await message.answer(text=_txt('try_again_chet',message.from_user.id))
-    state.set_state(FSM_state.wChet)
+    await state.set_state(FSM_state.wChet)
 
 @router_chet.message(StateFilter(FSM_state.wChet))
 async def wrong_chet(message: types.Message):

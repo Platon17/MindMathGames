@@ -9,6 +9,8 @@ from aiogram import Dispatcher
 from handlers import main_handlers
 
 from data import FSM_state, idPlaton
+from var import redis,user_dict,cutting_dict,chet_dict,tickets_dict
+import json
 
 
 from aiogram.filters import BaseFilter # для создания своих фильтров
@@ -32,17 +34,24 @@ from services.best_path import find_path
 # === FSM ===
 from aiogram.fsm.context import FSMContext
 from aiogram.fsm.state import default_state, State, StatesGroup
-from aiogram.fsm.storage.memory import MemoryStorage
+
+from aiogram.fsm.storage.redis import RedisStorage, Redis
+#from aiogram.fsm.storage.memory import MemoryStorage # без Redis
 config = config.load_config()
 BOT_TOKEN: str = config.tg_bot.token
-storage = MemoryStorage()
+storage = RedisStorage(redis=redis)
+#storage = MemoryStorage() # без Radis
 dp = Dispatcher(storage=storage)
 async def start_bot(bot: Bot):
     await bot.send_message(idPlaton, text="Бот запущен!")
 async def stop_bot(bot: Bot):
     await bot.send_message(idPlaton, text="Бот остановлен!")
 async def main():
-    #
+#    json_str = await redis.get('user_dict')
+#    user_dict = json.loads(json_str)
+#    cutting_dict = json.loads(await redis.get('cutting_dict'))
+#    chet_dict = json.loads(await redis.get('chet_dict'))
+#    tickets_dict = json.loads(await redis.get('tickets_dict'))
     logging.basicConfig(level=logging.INFO)
     bot = Bot(
         token=BOT_TOKEN,

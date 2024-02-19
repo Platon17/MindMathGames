@@ -1,6 +1,14 @@
+from aiogram.fsm.storage.redis import Redis
+import json
 # Перемнные чтобы были доступны из любых модулей
 # Создаем "базу данных" пользователей
-user_dict:dict = {}
+
+user_dict: dict = {}
+chet_dict: dict ={}
+tickets_dict: dict ={}
+cutting_dict: dict ={}
+
+redis = Redis(host='localhost')
 
 tasks_dict:dict ={
 	'tickets':{
