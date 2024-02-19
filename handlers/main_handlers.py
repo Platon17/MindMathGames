@@ -61,7 +61,7 @@ async def set_lang_ru(message: types.Message, state: FSMContext):
 @router_main.message(F.text.endswith('нглийский'))
 async def set_lang_en(message: types.Message, state: FSMContext):
     user_dict[str(message.from_user.id)] = {'lang': 'en'}
-    await redis.set('user_dict', json.dumps(user_dict))
+#    await redis.set('user_dict', json.dumps(user_dict))
     await mm(message,state)
 
 # знакомый язык, но без словаря
