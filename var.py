@@ -1,4 +1,4 @@
-from aiogram.fsm.storage.redis import Redis
+#from aiogram.fsm.storage.redis import Redis
 import json
 # Перемнные чтобы были доступны из любых модулей
 # Создаем "базу данных" пользователей
