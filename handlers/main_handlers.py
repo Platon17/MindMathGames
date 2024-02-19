@@ -33,6 +33,7 @@ router_main.include_router(sm_handlers.router_sm)     # роутер решат�
 @router_main.message(F.text.endswith('зык' ))
 @router_main.message(F.text.endswith('anguage'))
 @router_main.message(F.text=='🇷🇺 Язык 🇬🇧')
+@router_main.message(F.text=='🇷🇺 Language 🇬🇧')
 async def to_lang(message: types.Message, state: FSMContext):
     await message.answer(
             text=markdown.text(
