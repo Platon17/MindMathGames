@@ -9,9 +9,6 @@ from aiogram import Dispatcher
 from handlers import main_handlers
 
 from data import FSM_state, idPlaton
-from var import user_dict,cutting_dict,chet_dict,tickets_dict
-import json
-
 
 from aiogram.filters import BaseFilter # для создания своих фильтров
 from aiogram.filters import Command, StateFilter, or_f
@@ -26,10 +23,6 @@ from aiogram.fsm.storage.memory import MemoryStorage
 # from handlers import mm_handlers
 
 # base logic
-from services.services import _text
-from services.cutting import cut, m_to_str
-from services.tickets import solve as ticketsolve, numbers_opers
-from services.best_path import find_path
 
 # === FSM ===
 from aiogram.fsm.context import FSMContext
