@@ -8,7 +8,7 @@ def gen_chet(min_r:int, max_r:int, min_c:int, max_c:int, n_dots:int)->list:
     r:int = randint(min_r,max_r)
     c:int = randint(min_c,max_c)
     k:int = r*c
-    k_dots:int = randint(1,n_dots)
+    k_dots:int = randint(4,n_dots)
     m:list = [[False] * c for i in range(r)]  # пустая матрица
     for i in range(1,k_dots+1):
         p = randint(0,k)

@@ -31,7 +31,7 @@ async def show_task_path(message: types.Message, state: FSMContext):
     await state.update_data(matrix=matrix)
     await message.answer(
         text=matrix,
-        reply_markup=create_kb(2,message.from_user.id, 'btn_back', 'btn_home','btn_give_up')
+        reply_markup=create_kb(3,message.from_user.id, 'btn_back', 'btn_home','btn_give_up')
     )
     await message.answer(text=_txt('for_give_up', message.from_user.id))
     await state.set_state(FSM_state.wAnsPath)
@@ -88,7 +88,7 @@ async def path(message: types.Message, state: FSMContext):
     await state.set_state(FSM_state.wPath)
     # examples buttons
     BTN_EXMPL:dict={}
-    for i in range(8):
+    for i in range(6):
         BTN_EXMPL['btn_exmpl_'+str(i)]=gen_path_str(7,7,7,7,6,9)
     await message.answer(text=_txt('quote100', message.from_user.id))
     await message.answer(
@@ -98,7 +98,7 @@ async def path(message: types.Message, state: FSMContext):
                           ),
             sep="\n"
         ),
-        reply_markup=create_kb(4,message.from_user.id, 'btn_back', 'btn_home', 'btn_examples', 'btn_options',**BTN_EXMPL)
+        reply_markup=create_kb(3,message.from_user.id, 'btn_back', 'btn_home', 'btn_examples', **BTN_EXMPL)
 
     )
 

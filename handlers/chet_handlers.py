@@ -88,7 +88,7 @@ async def ans_chet_wrong(message: types.Message, state: FSMContext):
 async def chet(message: types.Message, state: FSMContext):
     # examples buttons
     BTN_EXMPL:dict={}
-    for i in range(8):
+    for i in range(6):
         BTN_EXMPL['btn_exmpl_'+str(i)]=gen_chet_str(3, max_n_chet, 3, max_n_chet, max_n_dots)
     await message.answer(text=_txt('quote100', message.from_user.id))
     await message.answer(
@@ -98,7 +98,7 @@ async def chet(message: types.Message, state: FSMContext):
                           ),
             sep="\n"
         ),
-        reply_markup=create_kb(4,message.from_user.id, 'btn_back', 'btn_home', 'btn_examples', 'btn_options',**BTN_EXMPL)
+        reply_markup=create_kb(3,message.from_user.id, 'btn_back', 'btn_home', 'btn_examples',**BTN_EXMPL)
 
     )
     await state.set_state(FSM_state.wChet)

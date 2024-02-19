@@ -41,7 +41,7 @@ async def solve(message: types.Message, state: FSMContext):
     await message.answer(text=_txt('quote100', message.from_user.id))
     await message.answer(
         text=markdown.text(_txt('solve_about', message.from_user.id),sep="\n"),
-        reply_markup=create_kb(4,message.from_user.id, 'btn_back', 'btn_home', 'btn_tickets', 'btn_cutting','btn_path', 'btn_simm', 'btn_chet','btn_add')
+        reply_markup=create_kb(3,message.from_user.id, 'btn_back', 'btn_home', 'btn_language', 'btn_tickets', 'btn_cutting','btn_path', 'btn_simm', 'btn_chet','btn_add')
     )
     await state.set_state(FSM_state.wSolve)
 
@@ -59,7 +59,7 @@ async def research(message: types.Message, state: FSMContext):
     await message.answer(text=_txt('quote100', message.from_user.id))
     await message.answer(
         text=markdown.text(_txt('research_about', message.from_user.id),sep="\n"),
-        reply_markup=create_kb(4,message.from_user.id, 'btn_back', 'btn_home', 'btn_artur', 'btn_add')
+        reply_markup=create_kb(3,message.from_user.id, 'btn_back', 'btn_home', 'btn_language', 'btn_artur', 'btn_add')
     )
     await state.set_state(FSM_state.wReserch)
 
@@ -77,7 +77,7 @@ async def train(message: types.Message, state: FSMContext):
     await message.answer(text=_txt('quote100', message.from_user.id))
     await message.answer(
         text=markdown.text(_txt('train_about', message.from_user.id), sep="\n"),
-        reply_markup=create_kb(4, message.from_user.id, 'btn_back', 'btn_home', 'btn_tickets', 'btn_cutting','btn_path', 'btn_simm', 'btn_chet', 'btn_add')
+        reply_markup=create_kb(3, message.from_user.id, 'btn_back', 'btn_home', 'btn_language','btn_tickets', 'btn_cutting','btn_path', 'btn_simm', 'btn_chet', 'btn_add')
     )
     await state.set_state(FSM_state.wTrain)
 
@@ -91,7 +91,7 @@ async def train(message: types.Message, state: FSMContext):
 @router_sm.message(F.text.startwith('play'))
 @router_sm.message(F.text.endswith('Play'))
 @router_sm.message(F.text.endswith('play'))
-async def train(message: types.Message, state: FSMContext):
+async def play(message: types.Message, state: FSMContext):
     await message.answer(text=_txt('quote100', message.from_user.id))
     await message.answer(
         text=markdown.text(_txt('train_about', message.from_user.id), sep="\n"),
@@ -106,7 +106,7 @@ async def AI(message: types.Message, state: FSMContext):
     await message.answer(text=_txt('quote100', message.from_user.id))
     await message.answer(
         text=markdown.text(_txt('AI_about', message.from_user.id), sep="\n"),
-        reply_markup=create_kb(4, message.from_user.id, 'btn_back', 'btn_home', 'ChatGPT', 'CharacterAI', 'GoogleBard', 'JanitorAI',
+        reply_markup=create_kb(3, message.from_user.id, 'btn_back', 'btn_home', 'btn_language','ChatGPT', 'CharacterAI', 'GoogleBard', 'JanitorAI',
                                'PerplexityAI', 'Civitai', 'LeonardoAI', 'ElevenLabs', 'CapCut', 'Cutout.pro')
 
     )
@@ -143,7 +143,7 @@ async def speak(message: types.Message, state: FSMContext):
     )
     await message.answer(
         text=markdown.text(_txt('speak_about', message.from_user.id), sep="\n"),
-        reply_markup=create_kb(4, message.from_user.id, 'btn_back', 'btn_home', 'btn_quotes', 'btn_jokes', 'btn_sport', 'btn_politic', 'btn_computers', 'btn_weather','btn_music', 'btn_video', 'btn_avto', 'btn_AI')
+        reply_markup=create_kb(4, message.from_user.id, 'btn_back', 'btn_home', 'btn_language', 'btn_quotes', 'btn_jokes', 'btn_sport', 'btn_politic', 'btn_computers', 'btn_weather','btn_music', 'btn_video', 'btn_avto', 'btn_AI')
     )
     await state.set_state(FSM_state.wSpeak)
 
