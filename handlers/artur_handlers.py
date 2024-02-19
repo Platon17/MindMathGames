@@ -87,7 +87,7 @@ async def artur_research(message: types.Message, state: FSMContext):
                 await message.answer(text=_sLine(':'.join(map(str, r))))
     if sucsess:
         await message.answer(text=_txt('n_operation', message.from_user.id)+str(n_op))
-        await message.answer(text=_txt('sucsess', message.from_user.id)+str(sucsess))
+        await message.answer(text=_txt('sucsess', message.from_user.id))
     else:
         await message.answer(text=_txt('infinity', message.from_user.id))
         await message.answer(text=_txt('unsucsess', message.from_user.id))

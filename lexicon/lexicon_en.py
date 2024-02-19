@@ -38,7 +38,7 @@ LEXICON_EN: dict[str, str] = {
     'txt_solve_artur': 'task King Artur....',
     'input_artur_k': 'Input number of knights: ',
     'input_artur_c': 'Input number of coins ',
-    'n_operation': 'Number of knights: ',
+    'n_operation': 'Number operations: ',
     'sucsess': 'Sucsess!',
     'unsucsess': 'Not sucsess!',
 
@@ -73,7 +73,7 @@ LEXICON_EN: dict[str, str] = {
     'f_cutting': 'cutting',
     'f_path': 'path',
     'f_chet': 'ord',
-    'f_simm': 'simmetr',
+    'f_simm': 'simm',
     'f_artur': 'artur',
 
     'f_excess_cutting': 'excess',

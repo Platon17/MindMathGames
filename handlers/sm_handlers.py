@@ -170,6 +170,12 @@ async def back_to_slove(message: types.Message, state: FSMContext):
 @router_sm.message(F.text == '⬅️ Назад', StateFilter(FSM_state.wAnsTicket))
 @router_sm.message(F.text == '⬅️ Назад', StateFilter(FSM_state.wAnsCutting))
 @router_sm.message(F.text == '⬅️ Назад', StateFilter(FSM_state.wAnsPath))
+@router_sm.message(F.text == '⬅️ Back', StateFilter(FSM_state.wArtur))
+@router_sm.message(F.text == '⬅️ Back', StateFilter(FSM_state.wAnsChet))
+@router_sm.message(F.text == '⬅️ Back', StateFilter(FSM_state.wAnsSimm))
+@router_sm.message(F.text == '⬅️ Back', StateFilter(FSM_state.wAnsTicket))
+@router_sm.message(F.text == '⬅️ Back', StateFilter(FSM_state.wAnsCutting))
+@router_sm.message(F.text == '⬅️ Back', StateFilter(FSM_state.wAnsPath))
 async def back_to_train(message: types.Message, state: FSMContext):
     await state.set_state(FSM_state.wTrain)
     await train(message, state)

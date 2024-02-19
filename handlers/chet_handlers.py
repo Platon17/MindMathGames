@@ -32,7 +32,7 @@ async def examples_tickets(message: types.Message, state: FSMContext):
 @router_chet.message(StateFilter(FSM_state.wTrain),WordChet())
 async def show_task_chet(message: types.Message, state: FSMContext):
     await message.answer(text='solve_chet')
-    chet=gen_chet_str(3,max_n_chet,3,max_n_chet,max_n_dots)
+    chet=gen_chet_str(4,max_n_chet,4,max_n_chet,max_n_dots)
     await state.update_data(chet=chet)
     await message.answer(
         text= _sLine(m_to_str(chet)),

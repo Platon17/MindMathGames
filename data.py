@@ -32,5 +32,5 @@ max_n_tickets = 15
 max_n_knights = 15
 max_n_cutting = 20
 max_n_simm = 100
-max_n_chet = 6
+max_n_chet = 7
 max_n_dots = 6
