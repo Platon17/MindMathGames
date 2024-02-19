@@ -8,7 +8,7 @@ chet_dict: dict ={}
 tickets_dict: dict ={}
 cutting_dict: dict ={}
 
-redis = Redis(host='localhost')
+#redis = Redis(host='localhost')
 
 tasks_dict:dict ={
 	'tickets':{

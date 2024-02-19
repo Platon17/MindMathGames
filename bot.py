@@ -9,7 +9,7 @@ from aiogram import Dispatcher
 from handlers import main_handlers
 
 from data import FSM_state, idPlaton
-from var import redis,user_dict,cutting_dict,chet_dict,tickets_dict
+from var import user_dict,cutting_dict,chet_dict,tickets_dict
 import json
 
 
@@ -39,8 +39,8 @@ from aiogram.fsm.storage.redis import RedisStorage, Redis
 #from aiogram.fsm.storage.memory import MemoryStorage # без Redis
 config = config.load_config()
 BOT_TOKEN: str = config.tg_bot.token
-storage = RedisStorage(redis=redis)
-#storage = MemoryStorage() # без Radis
+#storage = RedisStorage(redis=redis)
+storage = MemoryStorage() # без Radis
 dp = Dispatcher(storage=storage)
 async def start_bot(bot: Bot):
     await bot.send_message(idPlaton, text="Бот запущен!")
